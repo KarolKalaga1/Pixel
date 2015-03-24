@@ -26,7 +26,7 @@ public class PaintMenu extends JMenuBar{
         JMenuItem save; 
         JMenuItem saveas;
 
-    JMenu tools;
+    JMenu view;
         JMenuItem undo;
         JMenu rotation;
             JMenuItem right30;
@@ -35,7 +35,10 @@ public class PaintMenu extends JMenuBar{
             JMenuItem horizontalRotation;
             JMenuItem verticalRotation;
         
-    JMenu options; 
+    JMenu tools;
+        JMenu imageProcess;
+            JMenuItem sepia;
+            JMenuItem gray;
 
     JMenu help;
         JMenuItem helpPaint;
@@ -46,8 +49,8 @@ public class PaintMenu extends JMenuBar{
 
         file    =   new JMenu("File");
         help    =   new JMenu("Help");
-        tools    =   new JMenu("View");
-        options =   new JMenu("Tools");
+        view    =   new JMenu("View");
+        tools =   new JMenu("Tools");
 
         news    =   new JMenuItem("New File");
         open    =   new JMenuItem("Open File");
@@ -72,6 +75,10 @@ public class PaintMenu extends JMenuBar{
         right30              =  new JMenuItem("right 30");
         right45              =  new JMenuItem("right 45");
         right90              =  new JMenuItem("right 90");
+        
+        imageProcess         = new JMenu("Image Process");
+        sepia                = new JMenuItem("Sepia");
+        gray                 = new JMenuItem("Gray");
 
         file.add(news);
         file.add(open);
@@ -100,8 +107,8 @@ public class PaintMenu extends JMenuBar{
 //        left90.setEnabled(false);
 //        rotation180.setEnabled(false);
         
-       tools.add(undo);
-       tools.add(rotation);
+       view.add(undo);
+       view.add(rotation);
         
        undo.addActionListener(actionMenu);
        right45.addActionListener(actionMenu);
@@ -110,10 +117,18 @@ public class PaintMenu extends JMenuBar{
        verticalRotation.addActionListener(actionMenu);
        horizontalRotation.addActionListener(actionMenu);
        
-       options.setEnabled(false);
+//       tools.setEnabled(false);
+        add(view);
         add(tools);
-        add(options);
         add(help);
+        
+        imageProcess.add(sepia);
+        imageProcess.add(gray);
+        tools.add(imageProcess);
+        
+        
+        sepia.addActionListener(actionMenu);
+        gray.addActionListener(actionMenu);
     }
 
   public class ActionMenu implements ActionListener{
@@ -189,6 +204,13 @@ public class PaintMenu extends JMenuBar{
          ImageIcon icon = new ImageIcon(this.getClass().getResource("/about.png"));
          JOptionPane.showMessageDialog(null, "\n"
                 + "Program created by Karol Kalaga.\nFor more information please write at kalagakarol@gmail.com", "About", JOptionPane.INFORMATION_MESSAGE, icon);
+        }
+        if(e.getSource()==sepia){
+         Paint.paintStart.imageProcess(ImageProcessEnum.SEPIA);
+                 
+        }
+        if(e.getSource()==gray){
+         Paint.paintStart.imageProcess(ImageProcessEnum.GRAY);
         }
             
         }

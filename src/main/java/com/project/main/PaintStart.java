@@ -2,6 +2,7 @@
 package com.project.main;
 
 import com.project.workspace.FigureEnum;
+import com.project.workspace.ImageProcessEnum;
 import com.project.workspace.OptionsEnum;
 import com.project.workspace.PaintFigures;
 import com.project.workspace.PaintMenu;
@@ -55,7 +56,7 @@ public final class PaintStart extends JFrame {
          
         this.setSize(800 , 600);
         this.setLocation(400 , 200);
-        this.setTitle("PaintNew");
+        this.setTitle("Pixel");
         this.setLayout(new BorderLayout());
         
           paintMenu     = new PaintMenu();
@@ -150,4 +151,8 @@ public final class PaintStart extends JFrame {
         paintSurface.rotationImage(angle);
     }
    
+    public void imageProcess(ImageProcessEnum processEnum){
+        paintSurface.imageProcesses(processEnum);
+    }
+    
 }

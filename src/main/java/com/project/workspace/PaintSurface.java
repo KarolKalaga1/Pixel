@@ -43,8 +43,8 @@ public final class PaintSurface extends JScrollPane{
     
     private final SizedStack<Image> undoStack = new SizedStack<Image>(10);
 
-    public PaintSurface() {
-        setSize(1500, 1200);
+    public PaintSurface() {  
+      setSize(1500, 1200);
       colorPencil=new Color(0,0,0);
      
       setPreferredSize(new Dimension(getWidth(),getHeight()));
@@ -111,38 +111,65 @@ public final class PaintSurface extends JScrollPane{
     }
     
     
-    //Example to change//
-       public void undo() {
- 
-        raster = image.getRaster();
+    public void imageProcesses(ImageProcessEnum processEnum){
+          raster = image.getRaster();
         double ww[]=new double[3];
     
-        for(int i=0;i<raster.getWidth();i++)
+        switch(processEnum)
         {
-
-            for(int j=0;j<raster.getHeight();j++)
+            case SEPIA :
             {
+                 for(int i=0;i<raster.getWidth();i++)
+                    {
+                        for(int j=0;j<raster.getHeight();j++)
+                        {
 
-                raster.getPixel(i, j, pixels);
+                            raster.getPixel(i, j, pixels);
 
-                ww[0] = (pixels[0] * 0.393 + pixels[1] * 0.769 + pixels[2] * 0.189 ) / 1.351;
-                ww[1] = (pixels[0] * 0.349 + pixels[1] * 0.686 + pixels[2] * 0.186 ) / 1.203;
-                ww[2] = (pixels[0] * 0.272 + pixels[1] * 0.534 + pixels[2] * 0.131 ) / 2.140;
+                            ww[0] = (pixels[0] * 0.393 + pixels[1] * 0.769 + pixels[2] * 0.189 ) / 1.351;
+                            ww[1] = (pixels[0] * 0.349 + pixels[1] * 0.686 + pixels[2] * 0.186 ) / 1.203;
+                            ww[2] = (pixels[0] * 0.272 + pixels[1] * 0.534 + pixels[2] * 0.131 ) / 2.140;
 
-                raster.setPixel(i, j, ww);
-            }
-       }
+                            raster.setPixel(i, j, ww);
+                        }
+                   }
+            }break;
+            case GRAY : 
+            {
+                 image.setData(raster);
+            
+                    for(int i=0;i<raster.getWidth();i++)
+                    {
+
+                        for(int j=0;j<raster.getHeight();j++)
+                        {
+
+                            raster.getPixel(i, j, pixels);
+
+                            ww[0] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
+                            ww[1] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
+                            ww[2] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
+
+                            raster.setPixel(i, j, ww);
+
+                        }
+
+                   }
+            }break;
+        }
+      
     
-        image.setData(raster);
         repaint();
-  
-//    if (undoStack.size() > 0) {
-//        setImage(undoStack.pop());
-//    }
     }
-       //Example to change//
-
     
+   
+
+       public void undo() {
+        if (undoStack.size() > 0) {
+            setImage(undoStack.pop());
+        }
+    }
+
     
     @Override
     public Graphics getGraphics() {
@@ -152,6 +179,7 @@ public final class PaintSurface extends JScrollPane{
     
     @Override
     public void paint(Graphics g2){  
+        
         
         graphics2d = (Graphics2D) g2;
 
