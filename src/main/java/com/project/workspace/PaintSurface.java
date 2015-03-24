@@ -23,12 +23,10 @@ import javax.swing.JScrollPane;
  */
 public final class PaintSurface extends JScrollPane{
 
-    private BufferedImage image = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);
-     private BufferedImage image1 = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);
-         private WritableRaster raster=null;
-    private int width = 0;
-    private int height = 0;
+    private BufferedImage image = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);  
+    private WritableRaster raster=null;
     private int pixels[] = new int[3];
+    
     private Image imageDrow;
     private Graphics2D graphics2d;
     private  Color colorPencil;  
@@ -112,11 +110,12 @@ public final class PaintSurface extends JScrollPane{
     repaint();
     }
     
+    
+    //Example to change//
        public void undo() {
-        image1 = image;
-        
+ 
         raster = image.getRaster();
-       double ww[]=new double[3];
+        double ww[]=new double[3];
     
         for(int i=0;i<raster.getWidth();i++)
         {
@@ -134,14 +133,14 @@ public final class PaintSurface extends JScrollPane{
             }
        }
     
-            image.setData(raster);
-            repaint();
-            
-            image1 = image;
+        image.setData(raster);
+        repaint();
+  
 //    if (undoStack.size() > 0) {
 //        setImage(undoStack.pop());
 //    }
-}
+    }
+       //Example to change//
 
     
     
@@ -164,8 +163,7 @@ public final class PaintSurface extends JScrollPane{
        
            
            g2.drawImage(image, 0, 0, null);
-        
-            
+     
     }
     
     public BufferedImage rotateImage(Image image, int angle)
@@ -190,7 +188,6 @@ public final class PaintSurface extends JScrollPane{
     }
 
     public void rotationImage(double angle){
-//      setPreferredSize(new Dimension(1500,1500));
         ima=true;          
         setImage(rotateImage(image, (int) angle));  
     }
