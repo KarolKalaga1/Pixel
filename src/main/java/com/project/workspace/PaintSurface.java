@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import javax.swing.JColorChooser;
 import javax.swing.JScrollPane;
 
@@ -23,6 +24,11 @@ import javax.swing.JScrollPane;
 public final class PaintSurface extends JScrollPane{
 
     private BufferedImage image = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);
+     private BufferedImage image1 = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);
+         private WritableRaster raster=null;
+    private int width = 0;
+    private int height = 0;
+    private int pixels[] = new int[3];
     private Image imageDrow;
     private Graphics2D graphics2d;
     private  Color colorPencil;  
@@ -106,11 +112,37 @@ public final class PaintSurface extends JScrollPane{
     repaint();
     }
     
-    public void undo() {
-    if (undoStack.size() > 0) {
-        setImage(undoStack.pop());
-    }
+       public void undo() {
+        image1 = image;
+        
+        raster = image.getRaster();
+       double ww[]=new double[3];
+    
+        for(int i=0;i<raster.getWidth();i++)
+        {
+
+            for(int j=0;j<raster.getHeight();j++)
+            {
+
+                raster.getPixel(i, j, pixels);
+
+                ww[0] = (pixels[0] * 0.393 + pixels[1] * 0.769 + pixels[2] * 0.189 ) / 1.351;
+                ww[1] = (pixels[0] * 0.349 + pixels[1] * 0.686 + pixels[2] * 0.186 ) / 1.203;
+                ww[2] = (pixels[0] * 0.272 + pixels[1] * 0.534 + pixels[2] * 0.131 ) / 2.140;
+
+                raster.setPixel(i, j, ww);
+            }
+       }
+    
+            image.setData(raster);
+            repaint();
+            
+            image1 = image;
+//    if (undoStack.size() > 0) {
+//        setImage(undoStack.pop());
+//    }
 }
+
     
     
     @Override
