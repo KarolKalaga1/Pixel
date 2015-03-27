@@ -39,6 +39,8 @@ public class PaintMenu extends JMenuBar{
         JMenu imageProcess;
             JMenuItem sepia;
             JMenuItem gray;
+            JMenuItem blackWhite;
+            JMenuItem brightness;
 
     JMenu help;
         JMenuItem helpPaint;
@@ -79,6 +81,8 @@ public class PaintMenu extends JMenuBar{
         imageProcess         = new JMenu("Image Process");
         sepia                = new JMenuItem("Sepia");
         gray                 = new JMenuItem("Gray");
+        blackWhite           = new JMenuItem("BlackWhite");
+        brightness           = new JMenuItem("Brightness");
 
         file.add(news);
         file.add(open);
@@ -124,12 +128,17 @@ public class PaintMenu extends JMenuBar{
         
         imageProcess.add(sepia);
         imageProcess.add(gray);
+        imageProcess.add(blackWhite);
+        imageProcess.add(brightness);
+        
         tools.add(imageProcess);
         
         
         sepia.addActionListener(actionMenu);
         gray.addActionListener(actionMenu);
-    }
+        blackWhite.addActionListener(actionMenu);
+        brightness.addActionListener(actionMenu);
+  }
 
   public class ActionMenu implements ActionListener{
 
@@ -211,6 +220,12 @@ public class PaintMenu extends JMenuBar{
         }
         if(e.getSource()==gray){
          Paint.paintStart.imageProcess(ImageProcessEnum.GRAY);
+        }
+        if(e.getSource()==blackWhite){
+         Paint.paintStart.imageProcess(ImageProcessEnum.BLACKWHITE);
+        }
+        if(e.getSource()==brightness){
+         Paint.paintStart.imageProcess(ImageProcessEnum.BRIGHTNESS);
         }
             
         }

@@ -1,19 +1,23 @@
 
 package com.project.workspace;
 
-import java.awt.BasicStroke;
+import com.project.algorithms.SizedStack;
+import com.project.algorithms.FloodFill;
+import java.awt.BasicStroke; 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.Arrays;
+import java.util.Random;
 import javax.swing.JColorChooser;
 import javax.swing.JScrollPane;
 
@@ -25,23 +29,22 @@ public final class PaintSurface extends JScrollPane{
 
     private BufferedImage image = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);  
     private WritableRaster raster=null;
-    private int pixels[] = new int[3];
-    
     private Image imageDrow;
+    private int pixels[] = new int[3];
+  
+   
     private Graphics2D graphics2d;
     private  Color colorPencil;  
-    private AffineTransform at;
    
-    int x,y,x1,y1;
+    private int x,y,x1,y1;
     
-    private boolean mouseDragged;
     private OptionsEnum options;
     private FigureEnum figure;
     
     boolean spr;
     boolean ima;
     
-    private final SizedStack<Image> undoStack = new SizedStack<Image>(10);
+    private final SizedStack<Image> undoStack = new SizedStack<>(10);
 
     public PaintSurface() {  
       setSize(1500, 1200);
@@ -54,7 +57,7 @@ public final class PaintSurface extends JScrollPane{
                 @Override
                 public void mousePressed(MouseEvent e)
                 {
-                    mouseDragged=false;
+                    saveToStack(image);
                     x=e.getX();
                     y=e.getY();
                      checkMouse(e);
@@ -62,8 +65,8 @@ public final class PaintSurface extends JScrollPane{
                 }
 
             @Override
-            public void mouseDragged(MouseEvent e) {    
-                mouseDragged=true;
+            public void mouseDragged(MouseEvent e) { 
+
                 x1=e.getX();
                 y1=e.getY();
                  checkMouse(e);
@@ -72,8 +75,9 @@ public final class PaintSurface extends JScrollPane{
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                 checkMouse(e);
+                checkMouse(e);
             }
+          
             
 		});
 
@@ -83,13 +87,13 @@ public final class PaintSurface extends JScrollPane{
                            
 				if(getGraphics() != null)
                                 {
-                                    mouseDragged=true;
-                                    checkMouse(e);
+                                   checkMousePencil(e);
                                 }
                                    
                             }  
                         
 		});
+    
 
     }
 
@@ -112,8 +116,10 @@ public final class PaintSurface extends JScrollPane{
     
     
     public void imageProcesses(ImageProcessEnum processEnum){
+         saveToStack(image);
           raster = image.getRaster();
         double ww[]=new double[3];
+        double hsv[];
     
         switch(processEnum)
         {
@@ -136,7 +142,7 @@ public final class PaintSurface extends JScrollPane{
             }break;
             case GRAY : 
             {
-                 image.setData(raster);
+                
             
                     for(int i=0;i<raster.getWidth();i++)
                     {
@@ -156,13 +162,138 @@ public final class PaintSurface extends JScrollPane{
 
                    }
             }break;
+            case BLACKWHITE : 
+            {
+                boolean better = true;
+                int ton = 100;
+                
+                
+                Random r = new Random();
+                double min=-(0.15*ton);
+                double max=0.15*ton;
+                int ton2=0;
+
+                for(int i=0;i<raster.getWidth();i++)
+                {
+
+                     for(int j=0;j<raster.getHeight();j++)
+                     {
+                          raster.getPixel(i, j, pixels);
+                          hsv=rgb2hsv(pixels[0], pixels[1], pixels[2]);
+
+                          if(better){
+
+                              ton2=ton+(int)(min + (int)(Math.random()  * ((max - min) + 1)));
+
+                          }
+                          else
+                              ton2=ton;
+                          if(hsv[2]>ton2)
+                          {
+
+                              ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
+                              Arrays.fill(ww, 0);
+                          }
+                          else
+                          {
+
+                              ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
+                              Arrays.fill(ww, 255);
+
+                          }
+
+                           raster.setPixel(i, j, ww);  
+
+
+                     }
+
+                }         
+            }break;
+                
+            case BRIGHTNESS :
+            {
+                int jasnosc = 100;
+                 
+    
+        for(int i=0;i<raster.getWidth();i++)
+        {
+
+            for(int j=0;j<raster.getHeight();j++)
+            {
+
+                raster.getPixel(i, j, pixels);
+                hsv=rgb2hsv(pixels[0], pixels[1], pixels[2]);
+                hsv[2]=hsv[2]+jasnosc>240?240:hsv[2]+jasnosc;
+
+                ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
+                raster.setPixel(i, j, ww);
+
+            }
+
+       }   
+            }
         }
       
-    
+     image.setData(raster);
         repaint();
     }
     
-   
+       private double[] rgb2hsv(double red, double grn, double blu)
+    {
+        double hue, sat, val;
+        double x, f, i;
+        double result[] = new double[3];
+
+        x = Math.min(Math.min(red, grn), blu);
+        val = Math.max(Math.max(red, grn), blu);
+        if (x == val){
+            hue = 0;
+            sat = 0;
+        }
+        else 
+        {
+            f = (red == x) ? grn-blu : ((grn == x) ? blu-red : red-grn);
+            i = (red == x) ? 3 : ((grn == x) ? 5 : 1);
+            hue = ((i-f/(val-x))*60)%360;
+            sat = ((val-x)/val);
+        }
+        result[0] = hue;
+        result[1] = sat;
+        result[2] = val;
+        return result;
+    }
+    
+     private double[] hsv2rgb(double hue, double sat, double val) 
+    {
+        double red = 0, grn = 0, blu = 0;
+        double i, f, p, q, t;
+        double result[] = new double[3];
+ 
+        if(val==0) 
+        {
+            red = 0;
+            grn = 0;
+            blu = 0;
+        } else 
+        {
+            hue/=60;
+            i = Math.floor(hue);
+            f = hue-i;
+            p = val*(1-sat);
+            q = val*(1-(sat*f));
+            t = val*(1-(sat*(1-f)));
+            if (i==0) {red=val; grn=t; blu=p;}
+            else if (i==1) {red=q; grn=val; blu=p;}
+            else if (i==2) {red=p; grn=val; blu=t;}
+            else if (i==3) {red=p; grn=q; blu=val;}
+            else if (i==4) {red=t; grn=p; blu=val;}
+            else if (i==5) {red=val; grn=p; blu=q;}
+        }
+        result[0] = red; 
+        result[1] = grn;
+        result[2] = blu;
+        return result;
+}
 
        public void undo() {
         if (undoStack.size() > 0) {
@@ -175,8 +306,7 @@ public final class PaintSurface extends JScrollPane{
     public Graphics getGraphics() {
         return super.getGraphics(); 
     }
-    
-    
+
     @Override
     public void paint(Graphics g2){  
         
@@ -252,6 +382,37 @@ public final class PaintSurface extends JScrollPane{
             this.colorPencil = JColorChooser.showDialog(null, "Choose a color", Color.BLUE);
         }
     }
+    
+    public void checkMousePencil(MouseEvent e)
+    {
+          x1 = e.getX();
+        y1 = e.getY();
+        
+         if(options==OptionsEnum.ERASER){
+            graphics2d.setColor(Color.WHITE);
+            graphics2d.setStroke(new BasicStroke(20));
+            graphics2d.drawLine(x, y, x1, y1);
+            repaint();
+            x = x1;
+            y = y1;
+            }
+         else if(options==OptionsEnum.PEN){       
+             graphics2d.setColor(colorPencil);
+                graphics2d.setStroke(new BasicStroke(1));
+                graphics2d.drawLine(x, y, x1, y1);
+                repaint();
+               x = x1;
+               y = y1;
+        }
+        else if(options==OptionsEnum.BRUSH){
+             graphics2d.setColor(colorPencil);
+              graphics2d.setStroke(new BasicStroke(10));
+                graphics2d.drawLine(x, y, x1, y1);
+                repaint();
+                 x = x1;
+                 y = y1;
+        }
+    }
 
     public void checkMouse(MouseEvent e){
         
@@ -264,73 +425,45 @@ public final class PaintSurface extends JScrollPane{
         int h = y - y1;
         if (h < 0)
             h = h * (-1);
-       
-         if(options==OptionsEnum.ERASER){
-             saveToStack(image);
-            graphics2d.setColor(Color.WHITE);
-            graphics2d.setStroke(new BasicStroke(20));
-            graphics2d.drawLine(x, y, x1, y1);
-            repaint();
-            x = x1;
-            y = y1;
-            }
-         else if(options==OptionsEnum.PEN){       
-             saveToStack(image);
-             graphics2d.setColor(colorPencil);
-                graphics2d.setStroke(new BasicStroke(1));
-                graphics2d.drawLine(x, y, x1, y1);
-                repaint();
-               x = x1;
-               y = y1;
-        }
-        else if(options==OptionsEnum.BRUSH){
-            saveToStack(image);
-             graphics2d.setColor(colorPencil);
-              graphics2d.setStroke(new BasicStroke(10));
-                graphics2d.drawLine(x, y, x1, y1);
-                repaint();
-                 x = x1;
-                 y = y1;
-        }
+
+        
      
-        else if(options==OptionsEnum.PAINT){
-            saveToStack(image);
-             graphics2d.setColor(colorPencil);
-            graphics2d.fillRect(0, 0,getWidth(), getHeight());
+        if(options==OptionsEnum.PAINT){
+            raster = image.getRaster();
+            raster.getPixel(x, y, pixels);
+            
+            int col = image.getRGB(x1, y1);
+            
+            Color color =new Color(col);
+            
+             new FloodFill().floodFill(image, new Point(x1, y1),color, colorPencil);
+
             repaint();
         }
-         
-         
-         if(mouseDragged==true){
-             
+                
             if(figure==FigureEnum.LINE){
-                saveToStack(image);
             graphics2d.setColor(colorPencil);
             graphics2d.drawLine(x, y,x1,y1);
                repaint();
 
            }
              else if(figure==FigureEnum.RECT){
-                 saveToStack(image);
             graphics2d.setColor(colorPencil);
             graphics2d.drawRect(x,y,w,h);
                repaint();
 
            }
              else if(figure==FigureEnum.CIRCLE){
-                 saveToStack(image);
             graphics2d.setColor(colorPencil);
             graphics2d.drawOval(x,y,Math.abs(x-x1),Math.abs(y-y1));
                repaint();
               }
              else if(figure==FigureEnum.ROUNDRECT){
-                 saveToStack(image);
             graphics2d.setColor(colorPencil);
             graphics2d.drawRoundRect(x, y,w,h,20,20);
                repaint();
            }
-         
-         }
+
     
     }
     

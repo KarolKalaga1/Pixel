@@ -1,5 +1,5 @@
 
-package com.project.workspace;
+package com.project.algorithms;
 
 import java.util.Stack;
 
