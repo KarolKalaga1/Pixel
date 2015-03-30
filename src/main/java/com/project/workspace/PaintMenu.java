@@ -26,9 +26,11 @@ public class PaintMenu extends JMenuBar{
         JMenuItem save; 
         JMenuItem saveas;
 
-    JMenu view;
+    JMenu edit;
         JMenuItem undo;
         JMenuItem redo;
+        
+    JMenu view;
         JMenu rotation;
             JMenuItem right30;
             JMenuItem right45;
@@ -36,15 +38,18 @@ public class PaintMenu extends JMenuBar{
             JMenuItem horizontalRotation;
             JMenuItem verticalRotation;
         
-    JMenu tools;
-        JMenuItem sizeTools; 
-        
-        JMenu imageProcess;
+    JMenu image;        
+        JMenu filters;
             JMenuItem sepia;
             JMenuItem gray;
             JMenuItem blackWhite;
-            JMenuItem brightness;
-
+            JMenuItem brightness;   
+        JMenu colors;
+        
+        
+    JMenu tools;
+        JMenuItem sizeTools; 
+        
     JMenu help;
         JMenuItem helpPaint;
         
@@ -53,9 +58,13 @@ public class PaintMenu extends JMenuBar{
   public PaintMenu(){
 
         file    =   new JMenu("File");
-        help    =   new JMenu("Help");
+        edit    =   new JMenu("Edit");
         view    =   new JMenu("View");
-        tools =   new JMenu("Tools");
+        image   =   new JMenu("Image");
+        tools   =   new JMenu("Tools");
+        help    =   new JMenu("Help");
+        
+        
 
         news    =   new JMenuItem("New File");
         open    =   new JMenuItem("Open File");
@@ -74,6 +83,7 @@ public class PaintMenu extends JMenuBar{
 
         undo                 =  new JMenuItem("Undo");
         redo                 =  new JMenuItem("Redo");
+        
         rotation             =  new JMenu("Rotation");
         
         horizontalRotation   =  new JMenuItem("Horizontal Rotation");
@@ -83,7 +93,8 @@ public class PaintMenu extends JMenuBar{
         right90              =  new JMenuItem("right 90");
         
        
-        imageProcess         = new JMenu("Image Process");
+        filters              = new JMenu("Filters");
+        colors               = new JMenu("Colors");
         sizeTools            = new JMenuItem("Size Tools");
         sepia                = new JMenuItem("Sepia");
         gray                 = new JMenuItem("Gray");
@@ -96,6 +107,10 @@ public class PaintMenu extends JMenuBar{
         file.add(saveas);
         file.addSeparator();
         file.add(quit);
+        
+        
+        edit.add(undo);
+        edit.add(redo);
 
         helpPaint = new JMenuItem("Help...");
      
@@ -118,8 +133,7 @@ public class PaintMenu extends JMenuBar{
 //        left90.setEnabled(false);
 //        rotation180.setEnabled(false);
         
-       view.add(undo);
-       view.add(redo);
+       
        view.add(rotation);
         
        undo.addActionListener(actionMenu);
@@ -130,17 +144,21 @@ public class PaintMenu extends JMenuBar{
        verticalRotation.addActionListener(actionMenu);
        horizontalRotation.addActionListener(actionMenu);
        
-//       tools.setEnabled(false);
+
+        add(edit);
         add(view);
+        add(image);
         add(tools);
         add(help);
         
-        imageProcess.add(sepia);
-        imageProcess.add(gray);
-        imageProcess.add(blackWhite);
-        imageProcess.add(brightness);
+        filters.add(sepia);
+        filters.add(gray);
+        filters.add(blackWhite);
+        filters.add(brightness);
         
-        tools.add(imageProcess);
+        image.add(filters);
+        image.add(colors);
+        
         tools.add(sizeTools);
         
         sepia.addActionListener(actionMenu);

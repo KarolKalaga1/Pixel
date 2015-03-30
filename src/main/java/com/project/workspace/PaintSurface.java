@@ -108,19 +108,19 @@ public final class PaintSurface extends JScrollPane{
                 }
                 if(options ==OptionsEnum.PEN)
                 {
-                  setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("pp.png").getImage(),new Point(4,26),"custom cursor"));
+                  setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/pen.png")).getImage(),new Point(4,26),"custom cursor"));
                 }
                 if(options == OptionsEnum.BRUSH)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("cursor.png").getImage(),new Point(4,26),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/brush.png")).getImage(),new Point(4,26),"custom cursor"));
                 }
                  if(options == OptionsEnum.PAINT)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("roll.png").getImage(),new Point(4,26),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/paint.png")).getImage(),new Point(4,26),"custom cursor"));
                 }
                   if(options == OptionsEnum.ERASER)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("eraser.png").getImage(),new Point(7,24),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/erasers.png")).getImage(),new Point(7,24),"custom cursor"));
                 }
             }
                         
