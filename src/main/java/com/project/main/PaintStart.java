@@ -10,10 +10,17 @@ import com.project.workspace.PaintSurface;
 import com.project.workspace.PaintTool;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -31,8 +38,12 @@ public final class PaintStart extends JFrame {
     private  final PaintSurface paintSurface;
     private  final PaintTool    paintTool;
     private  final PaintFigures paintFigures;
+    
+    private  ResizeTools  resizeTools;
     private  int   Width;
     private  int   Height;
+    private  int   mouseX;
+    private  int   mouseY;
     
     public PaintStart(){
 
@@ -51,6 +62,19 @@ public final class PaintStart extends JFrame {
             }
             }
         });
+         
+            addMouseListener(new MouseAdapter(){
+       
+                @Override
+                public void mousePressed(MouseEvent e)
+                {
+                 
+                    mouseX=e.getX();
+                    mouseY=e.getY();
+                                     
+                }
+            });
+         
          Width =1500;
          Height=1200;
          
@@ -121,7 +145,7 @@ public final class PaintStart extends JFrame {
     
     public void NewDocument(){
         
-          Graphics2D graphics ;
+        Graphics2D graphics ;
         BufferedImage image = paintSurface.getImage();
         graphics =  ( Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
@@ -140,11 +164,14 @@ public final class PaintStart extends JFrame {
     public void SetOptions(OptionsEnum o){
        paintSurface.setOption(o);
     }
-    public void SetFigure(FigureEnum f){
+    public void SetFigure(FigureEnum f){           
         paintSurface.setFigure(f);
     }
     public void UndoOperation(){
         paintSurface.undo();
+    }
+     public void RedoOperation(){
+        paintSurface.redo();
     }
     public void rotationImage(double angle){
         
@@ -153,6 +180,12 @@ public final class PaintStart extends JFrame {
    
     public void imageProcess(ImageProcessEnum processEnum){
         paintSurface.imageProcesses(processEnum);
+    }
+    
+    public void sizeTools()
+    {
+        resizeTools = new ResizeTools(paintSurface);
+        resizeTools.setVisible(true);
     }
     
 }

@@ -5,12 +5,14 @@ import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
 import java.awt.BasicStroke; 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -18,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JScrollPane;
 
@@ -35,6 +38,8 @@ public final class PaintSurface extends JScrollPane{
    
     private Graphics2D graphics2d;
     private  Color colorPencil;  
+    
+    private int sizeTools;
    
     private int x,y,x1,y1;
     
@@ -44,9 +49,11 @@ public final class PaintSurface extends JScrollPane{
     boolean spr;
     boolean ima;
     
-    private final SizedStack<Image> undoStack = new SizedStack<>(10);
+    private  SizedStack<Image> undoStack = new SizedStack<Image>(10);
+    private  SizedStack<Image> redoStack = new SizedStack<Image>(10);
 
     public PaintSurface() {  
+        sizeTools = 1;
       setSize(1500, 1200);
       colorPencil=new Color(0,0,0);
      
@@ -91,12 +98,48 @@ public final class PaintSurface extends JScrollPane{
                                 }
                                    
                             }  
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if(figure==FigureEnum.LINE || figure == FigureEnum.RECT || figure == FigureEnum.ROUNDRECT || figure == FigureEnum.CIRCLE )
+                {
+                Cursor hourglassCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+                setCursor(hourglassCursor);
+                }
+                if(options ==OptionsEnum.PEN)
+                {
+                  setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("pp.png").getImage(),new Point(4,26),"custom cursor"));
+                }
+                if(options == OptionsEnum.BRUSH)
+                {
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("cursor.png").getImage(),new Point(4,26),"custom cursor"));
+                }
+                 if(options == OptionsEnum.PAINT)
+                {
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("roll.png").getImage(),new Point(4,26),"custom cursor"));
+                }
+                  if(options == OptionsEnum.ERASER)
+                {
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("eraser.png").getImage(),new Point(7,24),"custom cursor"));
+                }
+            }
+                        
                         
 		});
     
 
     }
 
+    public int getSizeTools() {
+        return sizeTools;
+    }
+
+    public void setSizeTools(int sizeTools) {
+        this.sizeTools = sizeTools;
+    }
+
+    
+    
     private BufferedImage copyImage(Image img) {
     BufferedImage copyOfImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
     Graphics g = copyOfImage.createGraphics();
@@ -106,6 +149,7 @@ public final class PaintSurface extends JScrollPane{
 
     private void saveToStack(Image img) {
     undoStack.push(copyImage(img));
+  
     }
     
     private void setImage(Image img) {
@@ -297,9 +341,17 @@ public final class PaintSurface extends JScrollPane{
 
        public void undo() {
         if (undoStack.size() > 0) {
+            redoStack.push(copyImage(image));
             setImage(undoStack.pop());
         }
     }
+       
+        public void redo(){
+            if(redoStack.size() > 0 ){
+                saveToStack(image);
+                setImage(redoStack.pop());
+            }
+        }
 
     
     @Override
@@ -390,7 +442,14 @@ public final class PaintSurface extends JScrollPane{
         
          if(options==OptionsEnum.ERASER){
             graphics2d.setColor(Color.WHITE);
-            graphics2d.setStroke(new BasicStroke(20));
+            if(sizeTools==1)
+            {
+            graphics2d.setStroke(new BasicStroke(3));    
+            }
+            else
+            {
+            graphics2d.setStroke(new BasicStroke(sizeTools));
+            }
             graphics2d.drawLine(x, y, x1, y1);
             repaint();
             x = x1;
@@ -398,7 +457,7 @@ public final class PaintSurface extends JScrollPane{
             }
          else if(options==OptionsEnum.PEN){       
              graphics2d.setColor(colorPencil);
-                graphics2d.setStroke(new BasicStroke(1));
+                graphics2d.setStroke(new BasicStroke(sizeTools));
                 graphics2d.drawLine(x, y, x1, y1);
                 repaint();
                x = x1;
@@ -406,7 +465,14 @@ public final class PaintSurface extends JScrollPane{
         }
         else if(options==OptionsEnum.BRUSH){
              graphics2d.setColor(colorPencil);
-              graphics2d.setStroke(new BasicStroke(10));
+                if(sizeTools==1)
+                {
+                graphics2d.setStroke(new BasicStroke(3));    
+                }
+                else
+                {
+                graphics2d.setStroke(new BasicStroke(sizeTools));
+                }
                 graphics2d.drawLine(x, y, x1, y1);
                 repaint();
                  x = x1;
@@ -443,23 +509,27 @@ public final class PaintSurface extends JScrollPane{
                 
             if(figure==FigureEnum.LINE){
             graphics2d.setColor(colorPencil);
+            graphics2d.setStroke(new BasicStroke(sizeTools));
             graphics2d.drawLine(x, y,x1,y1);
                repaint();
 
            }
              else if(figure==FigureEnum.RECT){
             graphics2d.setColor(colorPencil);
+            graphics2d.setStroke(new BasicStroke(sizeTools));
             graphics2d.drawRect(x,y,w,h);
                repaint();
 
            }
              else if(figure==FigureEnum.CIRCLE){
             graphics2d.setColor(colorPencil);
+            graphics2d.setStroke(new BasicStroke(sizeTools));
             graphics2d.drawOval(x,y,Math.abs(x-x1),Math.abs(y-y1));
                repaint();
               }
              else if(figure==FigureEnum.ROUNDRECT){
             graphics2d.setColor(colorPencil);
+            graphics2d.setStroke(new BasicStroke(sizeTools));
             graphics2d.drawRoundRect(x, y,w,h,20,20);
                repaint();
            }

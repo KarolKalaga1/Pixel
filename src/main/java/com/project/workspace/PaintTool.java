@@ -4,6 +4,7 @@ package com.project.workspace;
 import com.project.main.Paint;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
