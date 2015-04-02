@@ -1,26 +1,20 @@
 
 package com.project.main;
 
-import com.project.workspace.FigureEnum;
-import com.project.workspace.ImageProcessEnum;
-import com.project.workspace.OptionsEnum;
+import com.project.tools.ResizeTools;
+import com.project.enums.FigureEnum;
+import com.project.enums.ImageProcessEnum;
+import com.project.enums.OptionsEnum;
 import com.project.workspace.PaintFigures;
 import com.project.workspace.PaintMenu;
 import com.project.workspace.PaintSurface;
 import com.project.workspace.PaintTool;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -38,12 +32,10 @@ public final class PaintStart extends JFrame {
     private  final PaintSurface paintSurface;
     private  final PaintTool    paintTool;
     private  final PaintFigures paintFigures;
+    private ResizeTools  resizeTools;
     
-    private  ResizeTools  resizeTools;
     private  int   Width;
     private  int   Height;
-    private  int   mouseX;
-    private  int   mouseY;
     
     public PaintStart(){
 
@@ -63,20 +55,9 @@ public final class PaintStart extends JFrame {
             }
         });
          
-            addMouseListener(new MouseAdapter(){
-       
-                @Override
-                public void mousePressed(MouseEvent e)
-                {
-                 
-                    mouseX=e.getX();
-                    mouseY=e.getY();
-                                     
-                }
-            });
-         
-         Width =1500;
-         Height=1200;
+         // określenie rozmiaru obszaru roboczego panelu do rysowania
+         Width =    1500;
+         Height=    1200;
          
         this.setSize(800 , 600);
         this.setLocation(400 , 200);
@@ -89,7 +70,6 @@ public final class PaintStart extends JFrame {
           paintFigures  = new PaintFigures();
 
 
-       
         add(paintFigures , BorderLayout.WEST);
         add(paintTool , BorderLayout.EAST);
         add(new JScrollPane(paintSurface) , BorderLayout.CENTER);
@@ -138,6 +118,7 @@ public final class PaintStart extends JFrame {
     public BufferedImage getBuffImage(){
         return paintSurface.getImage();
     }
+    
     public void setBufferedImage(BufferedImage image){
         paintSurface.setImages(image);
         repaint();
@@ -151,7 +132,6 @@ public final class PaintStart extends JFrame {
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, Width, Height);
         repaint();
-  
     }
     
     public void setSizeSurface(Dimension dimension){

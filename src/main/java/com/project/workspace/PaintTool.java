@@ -1,6 +1,7 @@
 
 package com.project.workspace;
 
+import com.project.enums.OptionsEnum;
 import com.project.main.Paint;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,14 +51,14 @@ public class PaintTool extends JPanel{
         buttons[6] =   new JButton(paintColor);
         
         PaintButtons paintButtons=new PaintButtons();
+      
+        for(int i = 0 ; i<7 ; i++){
+        buttons[i].addActionListener(paintButtons);
+        }
         
-        buttons[0].addActionListener(paintButtons);
-        buttons[1].addActionListener(paintButtons);
-        buttons[2].addActionListener(paintButtons);
-        buttons[3].addActionListener(paintButtons);
-        buttons[6].addActionListener(paintButtons);
         buttons[4].setEnabled(false);
         buttons[5].setEnabled(false);
+      
         for(int i=0 ; i<buttons.length ;++i){
             toolPanel.add(buttons[i]);
         }   

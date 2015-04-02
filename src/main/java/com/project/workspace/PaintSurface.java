@@ -1,8 +1,12 @@
 
 package com.project.workspace;
 
+import com.project.enums.OptionsEnum;
+import com.project.enums.ImageProcessEnum;
+import com.project.enums.FigureEnum;
 import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
+import com.project.tools.Filters;
 import java.awt.BasicStroke; 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -18,8 +22,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.util.Arrays;
-import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JScrollPane;
@@ -30,46 +32,63 @@ import javax.swing.JScrollPane;
  */
 public final class PaintSurface extends JScrollPane{
 
-    private BufferedImage image = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);  
-    private WritableRaster raster=null;
-    private Image imageDrow;
-    private int pixels[] = new int[3];
-  
-   
-    private Graphics2D graphics2d;
-    private  Color colorPencil;  
+    //zmienna przechowująca domysly rozmiar obrazu//
+    private BufferedImage  image  = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);  
+    private WritableRaster raster;
     
+    private Image         imageDrow;
+    private Graphics2D    graphics2d;
+    private Color         colorPencil;  
+    private OptionsEnum   options;
+    private FigureEnum    figure;
+    private final Filters filters;
+    
+    private final int pixels[];
     private int sizeTools;
-   
     private int x,y,x1,y1;
+    boolean spr,ima;
+    private  SizedStack<Image> undoStack;
+    private  SizedStack<Image> redoStack;
     
-    private OptionsEnum options;
-    private FigureEnum figure;
+    private ImageIcon iconPen;
+    private ImageIcon iconBrush;
+    private ImageIcon iconPaint;
+    private ImageIcon iconEraser;
     
-    boolean spr;
-    boolean ima;
-    
-    private  SizedStack<Image> undoStack = new SizedStack<Image>(10);
-    private  SizedStack<Image> redoStack = new SizedStack<Image>(10);
-
-    public PaintSurface() {  
-        sizeTools = 1;
-      setSize(1500, 1200);
-      colorPencil=new Color(0,0,0);
-     
-      setPreferredSize(new Dimension(getWidth(),getHeight()));
+    public PaintSurface() { 
         
+        //Wczytywanie skórek//
+        this.iconPen    = new ImageIcon(this.getClass().getResource("/pen.png"));
+        this.iconBrush  = new ImageIcon(this.getClass().getResource("/brush.png"));
+        this.iconPaint  = new ImageIcon(this.getClass().getResource("/paint.png"));
+        this.iconEraser = new ImageIcon(this.getClass().getResource("/erasers.png"));
+        
+        // wartości inicjalizujące// 
+        this.filters   = new Filters();
+        this.redoStack = new SizedStack<Image>(3);
+        this.undoStack = new SizedStack<Image>(3);
+        this.pixels    = new int[3];
+        this.raster    = null;
+          
+        this.sizeTools = 1;
+        this.setSize(1500, 1200);
+        this.colorPencil=new Color(0,0,0);
+     
+      //ustawienie rozmiaru okna po którym mozna rysowac//
+      setPreferredSize(new Dimension(getWidth(),getHeight()));
+       
+      //Akcje przewidzane z obsługą myszki MouseListener i MouseMotion//
       addMouseListener(new MouseAdapter(){
        
-                @Override
-                public void mousePressed(MouseEvent e)
-                {
-                    saveToStack(image);
-                    x=e.getX();
-                    y=e.getY();
-                     checkMouse(e);
-                      repaint();                   
-                }
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                saveToStack(image);
+                x=e.getX();
+                y=e.getY();
+                 checkMouse(e);
+                  repaint();                   
+            }
 
             @Override
             public void mouseDragged(MouseEvent e) { 
@@ -83,21 +102,18 @@ public final class PaintSurface extends JScrollPane{
             @Override
             public void mouseReleased(MouseEvent e) {
                 checkMouse(e);
-            }
-          
-            
-		});
+            }});
+      //Stop MouseListener//
 
         addMouseMotionListener(new MouseMotionAdapter(){
-                        @Override
-			public void mouseDragged(MouseEvent e){
-                           
-				if(getGraphics() != null)
-                                {
-                                   checkMousePencil(e);
-                                }
-                                   
-                            }  
+            
+            @Override
+            public void mouseDragged(MouseEvent e){
+                    if(getGraphics() != null)
+                    {
+                       checkMousePencil(e);
+                    }
+                }  
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -108,38 +124,33 @@ public final class PaintSurface extends JScrollPane{
                 }
                 if(options ==OptionsEnum.PEN)
                 {
-                  setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/pen.png")).getImage(),new Point(4,26),"custom cursor"));
+                  setCursor(Toolkit.getDefaultToolkit().createCustomCursor(iconPen.getImage(),new Point(4,26),"custom cursor"));
                 }
                 if(options == OptionsEnum.BRUSH)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/brush.png")).getImage(),new Point(4,26),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(iconBrush.getImage(),new Point(4,26),"custom cursor"));
                 }
                  if(options == OptionsEnum.PAINT)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/paint.png")).getImage(),new Point(4,26),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(iconPaint.getImage(),new Point(4,26),"custom cursor"));
                 }
                   if(options == OptionsEnum.ERASER)
                 {
-                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(this.getClass().getResource("/erasers.png")).getImage(),new Point(7,24),"custom cursor"));
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(iconEraser.getImage(),new Point(7,24),"custom cursor"));
                 }
-            }
-                        
-                        
-		});
-    
-
+            }});
+        //Stop MouseMotion//
     }
 
+    //Pobranie rozmiaru narzedzia//
     public int getSizeTools() {
         return sizeTools;
     }
-
+    //Ustawienie rozmiaru narzedzia//
     public void setSizeTools(int sizeTools) {
         this.sizeTools = sizeTools;
     }
 
-    
-    
     private BufferedImage copyImage(Image img) {
     BufferedImage copyOfImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
     Graphics g = copyOfImage.createGraphics();
@@ -149,202 +160,48 @@ public final class PaintSurface extends JScrollPane{
 
     private void saveToStack(Image img) {
     undoStack.push(copyImage(img));
-  
     }
     
-    private void setImage(Image img) {
-        
+    private void setImage(Image img) {  
     image = (BufferedImage) img;
     repaint();
     }
     
-    
+    //Ustawianie Filtrów//
     public void imageProcesses(ImageProcessEnum processEnum){
-         saveToStack(image);
-          raster = image.getRaster();
-        double ww[]=new double[3];
-        double hsv[];
-    
+        saveToStack(image);
+        raster = image.getRaster();
+        
         switch(processEnum)
         {
             case SEPIA :
             {
-                 for(int i=0;i<raster.getWidth();i++)
-                    {
-                        for(int j=0;j<raster.getHeight();j++)
-                        {
-
-                            raster.getPixel(i, j, pixels);
-
-                            ww[0] = (pixels[0] * 0.393 + pixels[1] * 0.769 + pixels[2] * 0.189 ) / 1.351;
-                            ww[1] = (pixels[0] * 0.349 + pixels[1] * 0.686 + pixels[2] * 0.186 ) / 1.203;
-                            ww[2] = (pixels[0] * 0.272 + pixels[1] * 0.534 + pixels[2] * 0.131 ) / 2.140;
-
-                            raster.setPixel(i, j, ww);
-                        }
-                   }
+                    raster = filters.sepiaFilter(raster);
             }break;
             case GRAY : 
             {
-                
-            
-                    for(int i=0;i<raster.getWidth();i++)
-                    {
-
-                        for(int j=0;j<raster.getHeight();j++)
-                        {
-
-                            raster.getPixel(i, j, pixels);
-
-                            ww[0] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
-                            ww[1] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
-                            ww[2] = 0.299*pixels[0]+0.587*pixels[1]+0.114*pixels[2];
-
-                            raster.setPixel(i, j, ww);
-
-                        }
-
-                   }
+                    raster = filters.grayFilter(raster);       
             }break;
             case BLACKWHITE : 
             {
-                boolean better = true;
-                int ton = 100;
-                
-                
-                Random r = new Random();
-                double min=-(0.15*ton);
-                double max=0.15*ton;
-                int ton2=0;
-
-                for(int i=0;i<raster.getWidth();i++)
-                {
-
-                     for(int j=0;j<raster.getHeight();j++)
-                     {
-                          raster.getPixel(i, j, pixels);
-                          hsv=rgb2hsv(pixels[0], pixels[1], pixels[2]);
-
-                          if(better){
-
-                              ton2=ton+(int)(min + (int)(Math.random()  * ((max - min) + 1)));
-
-                          }
-                          else
-                              ton2=ton;
-                          if(hsv[2]>ton2)
-                          {
-
-                              ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
-                              Arrays.fill(ww, 0);
-                          }
-                          else
-                          {
-
-                              ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
-                              Arrays.fill(ww, 255);
-
-                          }
-
-                           raster.setPixel(i, j, ww);  
-
-
-                     }
-
-                }         
+                    raster = filters.blackWhiteFilter(raster);
             }break;
                 
             case BRIGHTNESS :
             {
-                int jasnosc = 100;
-                 
-    
-        for(int i=0;i<raster.getWidth();i++)
-        {
-
-            for(int j=0;j<raster.getHeight();j++)
-            {
-
-                raster.getPixel(i, j, pixels);
-                hsv=rgb2hsv(pixels[0], pixels[1], pixels[2]);
-                hsv[2]=hsv[2]+jasnosc>240?240:hsv[2]+jasnosc;
-
-                ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
-                raster.setPixel(i, j, ww);
-
-            }
-
-       }   
+                    raster = filters.brightnessFilter(raster);
             }
         }
-      
-     image.setData(raster);
+        image.setData(raster);
         repaint();
     }
     
-       private double[] rgb2hsv(double red, double grn, double blu)
-    {
-        double hue, sat, val;
-        double x, f, i;
-        double result[] = new double[3];
-
-        x = Math.min(Math.min(red, grn), blu);
-        val = Math.max(Math.max(red, grn), blu);
-        if (x == val){
-            hue = 0;
-            sat = 0;
-        }
-        else 
-        {
-            f = (red == x) ? grn-blu : ((grn == x) ? blu-red : red-grn);
-            i = (red == x) ? 3 : ((grn == x) ? 5 : 1);
-            hue = ((i-f/(val-x))*60)%360;
-            sat = ((val-x)/val);
-        }
-        result[0] = hue;
-        result[1] = sat;
-        result[2] = val;
-        return result;
-    }
-    
-     private double[] hsv2rgb(double hue, double sat, double val) 
-    {
-        double red = 0, grn = 0, blu = 0;
-        double i, f, p, q, t;
-        double result[] = new double[3];
- 
-        if(val==0) 
-        {
-            red = 0;
-            grn = 0;
-            blu = 0;
-        } else 
-        {
-            hue/=60;
-            i = Math.floor(hue);
-            f = hue-i;
-            p = val*(1-sat);
-            q = val*(1-(sat*f));
-            t = val*(1-(sat*(1-f)));
-            if (i==0) {red=val; grn=t; blu=p;}
-            else if (i==1) {red=q; grn=val; blu=p;}
-            else if (i==2) {red=p; grn=val; blu=t;}
-            else if (i==3) {red=p; grn=q; blu=val;}
-            else if (i==4) {red=t; grn=p; blu=val;}
-            else if (i==5) {red=val; grn=p; blu=q;}
-        }
-        result[0] = red; 
-        result[1] = grn;
-        result[2] = blu;
-        return result;
-}
-
        public void undo() {
-        if (undoStack.size() > 0) {
-            redoStack.push(copyImage(image));
-            setImage(undoStack.pop());
+            if (undoStack.size() > 0) {
+                redoStack.push(copyImage(image));
+                setImage(undoStack.pop());
+            }
         }
-    }
        
         public void redo(){
             if(redoStack.size() > 0 ){
@@ -353,7 +210,6 @@ public final class PaintSurface extends JScrollPane{
             }
         }
 
-    
     @Override
     public Graphics getGraphics() {
         return super.getGraphics(); 
@@ -361,8 +217,7 @@ public final class PaintSurface extends JScrollPane{
 
     @Override
     public void paint(Graphics g2){  
-        
-        
+   
         graphics2d = (Graphics2D) g2;
 
             if(image!=null){
@@ -370,10 +225,8 @@ public final class PaintSurface extends JScrollPane{
             }        
            graphics2d = (Graphics2D)imageDrow.getGraphics();
            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-       
-           
+ 
            g2.drawImage(image, 0, 0, null);
-     
     }
     
     public BufferedImage rotateImage(Image image, int angle)
@@ -437,34 +290,39 @@ public final class PaintSurface extends JScrollPane{
     
     public void checkMousePencil(MouseEvent e)
     {
-          x1 = e.getX();
+        x1 = e.getX();
         y1 = e.getY();
         
-         if(options==OptionsEnum.ERASER){
-            graphics2d.setColor(Color.WHITE);
-            if(sizeTools==1)
+        switch(options)
+        {
+            case ERASER :
             {
-            graphics2d.setStroke(new BasicStroke(3));    
-            }
-            else
+                 graphics2d.setColor(Color.WHITE);
+                if(sizeTools==1)
+                {
+                graphics2d.setStroke(new BasicStroke(3));    
+                }
+                else
+                {
+                graphics2d.setStroke(new BasicStroke(sizeTools));
+                }
+                graphics2d.drawLine(x, y, x1, y1);
+                repaint();
+                x = x1;
+                y = y1;
+            }break;
+            case PEN :
             {
-            graphics2d.setStroke(new BasicStroke(sizeTools));
-            }
-            graphics2d.drawLine(x, y, x1, y1);
-            repaint();
-            x = x1;
-            y = y1;
-            }
-         else if(options==OptionsEnum.PEN){       
-             graphics2d.setColor(colorPencil);
+                graphics2d.setColor(colorPencil);
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 graphics2d.drawLine(x, y, x1, y1);
                 repaint();
-               x = x1;
-               y = y1;
-        }
-        else if(options==OptionsEnum.BRUSH){
-             graphics2d.setColor(colorPencil);
+                x = x1;
+                y = y1; 
+            }break;
+            case BRUSH :
+            {
+                graphics2d.setColor(colorPencil);
                 if(sizeTools==1)
                 {
                 graphics2d.setStroke(new BasicStroke(3));    
@@ -477,7 +335,9 @@ public final class PaintSurface extends JScrollPane{
                 repaint();
                  x = x1;
                  y = y1;
+            }break;
         }
+
     }
 
     public void checkMouse(MouseEvent e){
@@ -491,8 +351,7 @@ public final class PaintSurface extends JScrollPane{
         int h = y - y1;
         if (h < 0)
             h = h * (-1);
-
-        
+ 
      
         if(options==OptionsEnum.PAINT){
             raster = image.getRaster();
@@ -507,37 +366,39 @@ public final class PaintSurface extends JScrollPane{
             repaint();
         }
                 
-            if(figure==FigureEnum.LINE){
-            graphics2d.setColor(colorPencil);
-            graphics2d.setStroke(new BasicStroke(sizeTools));
-            graphics2d.drawLine(x, y,x1,y1);
-               repaint();
-
-           }
-             else if(figure==FigureEnum.RECT){
-            graphics2d.setColor(colorPencil);
-            graphics2d.setStroke(new BasicStroke(sizeTools));
-            graphics2d.drawRect(x,y,w,h);
-               repaint();
-
-           }
-             else if(figure==FigureEnum.CIRCLE){
-            graphics2d.setColor(colorPencil);
-            graphics2d.setStroke(new BasicStroke(sizeTools));
-            graphics2d.drawOval(x,y,Math.abs(x-x1),Math.abs(y-y1));
-               repaint();
-              }
-             else if(figure==FigureEnum.ROUNDRECT){
-            graphics2d.setColor(colorPencil);
-            graphics2d.setStroke(new BasicStroke(sizeTools));
-            graphics2d.drawRoundRect(x, y,w,h,20,20);
-               repaint();
-           }
-
-    
+        switch(figure)
+        {
+            case LINE :
+            {
+                graphics2d.setColor(colorPencil);
+                graphics2d.setStroke(new BasicStroke(sizeTools));
+                graphics2d.drawLine(x, y,x1,y1);
+                repaint();   
+            }break;
+            case RECT :
+            {
+                graphics2d.setColor(colorPencil);
+                graphics2d.setStroke(new BasicStroke(sizeTools));
+                graphics2d.drawRect(x,y,w,h);
+                repaint();         
+            }break;
+            case CIRCLE :
+            {
+                 graphics2d.setColor(colorPencil);
+                 graphics2d.setStroke(new BasicStroke(sizeTools));
+                 graphics2d.drawOval(x,y,Math.abs(x-x1),Math.abs(y-y1));
+                 repaint();
+            }break;
+            case ROUNDRECT :
+            {
+                 graphics2d.setColor(colorPencil);
+                 graphics2d.setStroke(new BasicStroke(sizeTools));
+                 graphics2d.drawRoundRect(x, y,w,h,20,20);
+                 repaint();  
+            }break;
+        }
     }
     
-
 }
 
 

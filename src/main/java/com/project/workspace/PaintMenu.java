@@ -1,6 +1,7 @@
 
 package com.project.workspace;
 
+import com.project.enums.ImageProcessEnum;
 import com.project.main.Paint;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -20,12 +21,12 @@ import javax.swing.*;
 public class PaintMenu extends JMenuBar{
  
     JMenu file;
-        JMenuItem quit;
         JMenuItem news;
         JMenuItem open;
         JMenuItem save; 
         JMenuItem saveas;
-
+        JMenuItem quit;
+   
     JMenu edit;
         JMenuItem undo;
         JMenuItem redo;
@@ -63,9 +64,7 @@ public class PaintMenu extends JMenuBar{
         image   =   new JMenu("Image");
         tools   =   new JMenu("Tools");
         help    =   new JMenu("Help");
-        
-        
-
+      
         news    =   new JMenuItem("New File");
         open    =   new JMenuItem("Open File");
         save    =   new JMenuItem("Save");
@@ -129,9 +128,6 @@ public class PaintMenu extends JMenuBar{
         horizontalRotation.setEnabled(false);
         verticalRotation.setEnabled(false);
         sizeTools.addActionListener(actionMenu);
-//        right90.setEnabled(false);
-//        left90.setEnabled(false);
-//        rotation180.setEnabled(false);
         
        
        view.add(rotation);

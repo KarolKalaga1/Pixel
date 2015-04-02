@@ -1,10 +1,10 @@
 
 package com.project.workspace;
 
+import com.project.enums.FigureEnum;
 import com.project.main.Paint;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -49,10 +49,9 @@ public class PaintFigures extends JPanel{
          
         FigureAction figureAction = new FigureAction();
         
-        figures[0].addActionListener(figureAction);
-        figures[1].addActionListener(figureAction);
-        figures[2].addActionListener(figureAction);
-        figures[3].addActionListener(figureAction);
+        for(int i = 0 ; i < 6 ; i++ ){
+            figures[i].addActionListener(figureAction);
+        }
         figures[4].setEnabled(false);
         figures[5].setEnabled(false);
         
