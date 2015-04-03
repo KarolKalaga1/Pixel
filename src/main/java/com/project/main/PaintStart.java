@@ -1,12 +1,15 @@
 
 package com.project.main;
 
+import com.project.enums.ColorEnum;
 import com.project.tools.ResizeTools;
 import com.project.enums.FigureEnum;
 import com.project.enums.ImageProcessEnum;
 import com.project.enums.OptionsEnum;
+import com.project.tools.SelectedColor;
 import com.project.workspace.PaintFigures;
 import com.project.workspace.PaintMenu;
+import com.project.workspace.PaintSelectColor;
 import com.project.workspace.PaintSurface;
 import com.project.workspace.PaintTool;
 import java.awt.BorderLayout;
@@ -15,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -28,10 +32,12 @@ import org.pushingpixels.substance.api.skin.TwilightSkin;
  */
 public final class PaintStart extends JFrame {
     
-    private  final PaintMenu    paintMenu;
-    private  final PaintSurface paintSurface;
-    private  final PaintTool    paintTool;
-    private  final PaintFigures paintFigures;
+    private  final PaintMenu      paintMenu;
+    private  final PaintSurface   paintSurface;
+    private  final PaintTool      paintTool;
+    private  final PaintFigures   paintFigures;
+    private  final PaintSelectColor paintSelectColor;
+    private SelectedColor selectedColor;
     private ResizeTools  resizeTools;
     
     private  int   Width;
@@ -54,26 +60,55 @@ public final class PaintStart extends JFrame {
             }
             }
         });
+         selectedColor = new SelectedColor();
          
-         // określenie rozmiaru obszaru roboczego panelu do rysowania
+        selectedColor.setNewColor(ColorEnum.BLACK, Color.BLACK);
+        selectedColor.setNewColor(ColorEnum.WHITE, Color.WHITE);
+        selectedColor.setNewColor(ColorEnum.DARKGRAY, Color.DARK_GRAY);
+        selectedColor.setNewColor(ColorEnum.LIGHTGRAY, Color.LIGHT_GRAY);
+        selectedColor.setNewColor(ColorEnum.BROWN, new Color(139, 71, 38));
+        selectedColor.setNewColor(ColorEnum.LIGHTBROWN,  new Color(150, 75, 0));
+        selectedColor.setNewColor(ColorEnum.RED, new Color(255, 0, 0));
+        selectedColor.setNewColor(ColorEnum.LIGHTRED,  new Color(195, 92, 111));
+        selectedColor.setNewColor(ColorEnum.ORANGE, new Color(233, 107, 57));
+        selectedColor.setNewColor(ColorEnum.LIGHTORANGE,  new Color(233, 150, 123));
+        selectedColor.setNewColor(ColorEnum.YELLOW, new Color(255, 239, 0));
+        selectedColor.setNewColor(ColorEnum.LIGHTYELLOW,  new Color(255, 255, 51));
+        selectedColor.setNewColor(ColorEnum.GREEN, new Color(0, 128, 0));
+        selectedColor.setNewColor(ColorEnum.LIGHTGREEN,  new Color(51, 204, 102));         
+        selectedColor.setNewColor(ColorEnum.BLUE,  new Color(0, 0, 204));
+        selectedColor.setNewColor(ColorEnum.LIGHTBLUE, new Color(0, 127,255));
+        selectedColor.setNewColor(ColorEnum.SKY,  new Color(0, 180, 247));
+        selectedColor.setNewColor(ColorEnum.SKYLIGHT, new Color(0, 255,255));
+        selectedColor.setNewColor(ColorEnum.PURPLE,  new Color(184,2, 255));
+        selectedColor.setNewColor(ColorEnum.LIGHTPURPLE, new Color(238, 230,238));
+        selectedColor.setNewColor(ColorEnum.DARKPURPLE,  new Color(102,0, 102));
+        selectedColor.setNewColor(ColorEnum.VERYLIGHTPURPLE, new Color(153, 102,204));      
+        selectedColor.setNewColor(ColorEnum.NAVY,  new Color(0,0, 128));
+        selectedColor.setNewColor(ColorEnum.LIGHTNAVY, new Color(25, 36,124)); 
+// określenie rozmiaru obszaru roboczego panelu do rysowania
          Width =    1500;
          Height=    1200;
          
-        this.setSize(800 , 600);
-        this.setLocation(400 , 200);
+        this.setSize(800 , 700);
+        this.setLocation(200 , 0);
         this.setTitle("Pixel");
         this.setLayout(new BorderLayout());
         
-          paintMenu     = new PaintMenu();
-          paintSurface  = new PaintSurface();
-          paintTool     = new PaintTool();
-          paintFigures  = new PaintFigures();
+          paintMenu      = new PaintMenu();
+          paintSurface   = new PaintSurface();
+          paintTool      = new PaintTool();
+          paintFigures   = new PaintFigures();
+          paintSelectColor = new PaintSelectColor();
 
 
+        add(paintMenu , BorderLayout.NORTH);
         add(paintFigures , BorderLayout.WEST);
         add(paintTool , BorderLayout.EAST);
         add(new JScrollPane(paintSurface) , BorderLayout.CENTER);
-        add(paintMenu , BorderLayout.NORTH);
+        add(paintSelectColor,BorderLayout.SOUTH);
+        
+        
         
         initializeSurface();
         
@@ -143,6 +178,11 @@ public final class PaintStart extends JFrame {
     
     public void SetOptions(OptionsEnum o){
        paintSurface.setOption(o);
+    }
+    public void setColor(ColorEnum color)
+    {     
+        Color col = selectedColor.getValue(color);
+        paintSurface.setColor(col);
     }
     public void SetFigure(FigureEnum f){           
         paintSurface.setFigure(f);

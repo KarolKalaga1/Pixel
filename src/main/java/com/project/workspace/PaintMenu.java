@@ -49,7 +49,6 @@ public class PaintMenu extends JMenuBar{
         
         
     JMenu tools;
-        JMenuItem sizeTools; 
         
     JMenu help;
         JMenuItem helpPaint;
@@ -94,7 +93,6 @@ public class PaintMenu extends JMenuBar{
        
         filters              = new JMenu("Filters");
         colors               = new JMenu("Colors");
-        sizeTools            = new JMenuItem("Size Tools");
         sepia                = new JMenuItem("Sepia");
         gray                 = new JMenuItem("Gray");
         blackWhite           = new JMenuItem("BlackWhite");
@@ -127,7 +125,6 @@ public class PaintMenu extends JMenuBar{
         rotation.add(right90);
         horizontalRotation.setEnabled(false);
         verticalRotation.setEnabled(false);
-        sizeTools.addActionListener(actionMenu);
         
        
        view.add(rotation);
@@ -155,7 +152,6 @@ public class PaintMenu extends JMenuBar{
         image.add(filters);
         image.add(colors);
         
-        tools.add(sizeTools);
         
         sepia.addActionListener(actionMenu);
         gray.addActionListener(actionMenu);
@@ -239,12 +235,7 @@ public class PaintMenu extends JMenuBar{
          ImageIcon icon = new ImageIcon(this.getClass().getResource("/about.png"));
          JOptionPane.showMessageDialog(null, "\n"
                 + "Program created by Karol Kalaga.\nFor more information please write at kalagakarol@gmail.com", "About", JOptionPane.INFORMATION_MESSAGE, icon);
-        }
-        
-        if(e.getSource()==sizeTools){
-            Paint.paintStart.sizeTools();
-        }
-        
+        }    
         if(e.getSource()==sepia){
          Paint.paintStart.imageProcess(ImageProcessEnum.SEPIA);
                  

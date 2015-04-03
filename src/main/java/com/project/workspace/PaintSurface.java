@@ -157,7 +157,7 @@ public final class PaintSurface extends JScrollPane{
     g.drawImage(img, 0, 0,getWidth(), getHeight(), null);
     return copyOfImage;
     }
-
+    // zapisywanie na stosie obrazu przed zmianami
     private void saveToStack(Image img) {
     undoStack.push(copyImage(img));
     }
@@ -167,7 +167,7 @@ public final class PaintSurface extends JScrollPane{
     repaint();
     }
     
-    //Ustawianie Filtrów//
+    //wybór Filtrów//
     public void imageProcesses(ImageProcessEnum processEnum){
         saveToStack(image);
         raster = image.getRaster();
@@ -196,14 +196,15 @@ public final class PaintSurface extends JScrollPane{
         repaint();
     }
     
-       public void undo() {
+    //przywrócenie poprzedniego stanu do tyłu
+    public void undo() {
             if (undoStack.size() > 0) {
                 redoStack.push(copyImage(image));
                 setImage(undoStack.pop());
             }
         }
-       
-        public void redo(){
+    //przywrócenie stanu sprzed cofniecia undo   
+    public void redo(){
             if(redoStack.size() > 0 ){
                 saveToStack(image);
                 setImage(redoStack.pop());
@@ -229,6 +230,7 @@ public final class PaintSurface extends JScrollPane{
            g2.drawImage(image, 0, 0, null);
     }
     
+    //Obracanie  za pomocą wbudowanej transformacji w java
     public BufferedImage rotateImage(Image image, int angle)
     {
         
@@ -270,29 +272,40 @@ public final class PaintSurface extends JScrollPane{
         super.setPreferredSize(preferredSize); 
     }
     
+    //Ustawienie opcji z Panelu po prawej stronie,
+    //sprawdzenie czy nie jest to zmiana koloru,
+    //jeśli tak to wywołanie dialogu 
     public void setOption(OptionsEnum o){
         options = o;
         figure = FigureEnum.NONE;
         check();
     }
     
+    //Sprawdzenie jaka została wybrana figura w panelu głownym i rysowanie jej
     public void setFigure(FigureEnum f){
         figure = f;
         options = OptionsEnum.NONE;
     }
  
     public void check(){
-        
     if(options==OptionsEnum.COLORCHOOSE){    
             this.colorPencil = JColorChooser.showDialog(null, "Choose a color", Color.BLUE);
         }
     }
+    //Ustawianie kolorów
+    public void setColor(Color color)
+    {
+        this.colorPencil= color;
+    }
     
+    //Sprawdzenie akcji przedmiotów którymi możemy pisac po panelu
     public void checkMousePencil(MouseEvent e)
     {
         x1 = e.getX();
         y1 = e.getY();
         
+        if(options !=null)
+        {
         switch(options)
         {
             case ERASER :
@@ -337,9 +350,11 @@ public final class PaintSurface extends JScrollPane{
                  y = y1;
             }break;
         }
-
+        }
     }
 
+    //Sprawdzenie akcji myszy dla wypełniania obszaru kolorem 
+    //oraz dla rysowania figur
     public void checkMouse(MouseEvent e){
         
         x1 = e.getX();
@@ -365,6 +380,8 @@ public final class PaintSurface extends JScrollPane{
 
             repaint();
         }
+        if(figure!=null)
+        {
                 
         switch(figure)
         {
@@ -396,6 +413,7 @@ public final class PaintSurface extends JScrollPane{
                  graphics2d.drawRoundRect(x, y,w,h,20,20);
                  repaint();  
             }break;
+        }
         }
     }
     

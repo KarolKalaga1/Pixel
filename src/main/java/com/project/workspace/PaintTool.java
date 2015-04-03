@@ -5,7 +5,6 @@ import com.project.enums.OptionsEnum;
 import com.project.main.Paint;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -40,7 +39,7 @@ public class PaintTool extends JPanel{
          Icon paint      =    new ImageIcon(this.getClass().getResource("/Painting.png"));
          Icon loupe      =    new ImageIcon(this.getClass().getResource("/loupe.png"));
          Icon text       =    new ImageIcon(this.getClass().getResource("/Text.png"));
-         Icon paintColor =    new ImageIcon(this.getClass().getResource("/PaintColor.png"));
+         Icon paintColor =    new ImageIcon(this.getClass().getResource("/rozmiar.png"));
 
         buttons[0] =   new JButton(pen);
         buttons[1] =   new JButton(marker);
@@ -84,7 +83,8 @@ public class PaintTool extends JPanel{
                 Paint.paintStart.SetOptions(OptionsEnum.ERASER);
             }
             if(e.getSource()==buttons[6]){
-                Paint.paintStart.SetOptions(OptionsEnum.COLORCHOOSE);
+                Paint.paintStart.sizeTools();
+//                Paint.paintStart.SetOptions(OptionsEnum.COLORCHOOSE);
             }
             
         }
