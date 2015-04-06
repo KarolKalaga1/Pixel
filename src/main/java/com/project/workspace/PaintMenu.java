@@ -41,6 +41,7 @@ public class PaintMenu extends JMenuBar{
         
     JMenu image;        
         JMenu filters;
+            JMenuItem convolutional;
             JMenuItem sepia;
             JMenuItem gray;
             JMenuItem blackWhite;
@@ -93,6 +94,7 @@ public class PaintMenu extends JMenuBar{
        
         filters              = new JMenu("Filters");
         colors               = new JMenu("Colors");
+        convolutional        = new JMenuItem("Convolutional");
         sepia                = new JMenuItem("Sepia");
         gray                 = new JMenuItem("Gray");
         blackWhite           = new JMenuItem("BlackWhite");
@@ -144,6 +146,7 @@ public class PaintMenu extends JMenuBar{
         add(tools);
         add(help);
         
+        filters.add(convolutional);
         filters.add(sepia);
         filters.add(gray);
         filters.add(blackWhite);
@@ -152,7 +155,7 @@ public class PaintMenu extends JMenuBar{
         image.add(filters);
         image.add(colors);
         
-        
+        convolutional.addActionListener(actionMenu);
         sepia.addActionListener(actionMenu);
         gray.addActionListener(actionMenu);
         blackWhite.addActionListener(actionMenu);
@@ -235,7 +238,10 @@ public class PaintMenu extends JMenuBar{
          ImageIcon icon = new ImageIcon(this.getClass().getResource("/about.png"));
          JOptionPane.showMessageDialog(null, "\n"
                 + "Program created by Karol Kalaga.\nFor more information please write at kalagakarol@gmail.com", "About", JOptionPane.INFORMATION_MESSAGE, icon);
-        }    
+        }   
+        if(e.getSource()==convolutional){
+            Paint.paintStart.imageProcess(ImageProcessEnum.CONVOLUTIONAL);
+        }
         if(e.getSource()==sepia){
          Paint.paintStart.imageProcess(ImageProcessEnum.SEPIA);
                  

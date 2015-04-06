@@ -174,6 +174,10 @@ public final class PaintSurface extends JScrollPane{
         
         switch(processEnum)
         {
+            case CONVOLUTIONAL :
+            {
+                raster = filters.convolutionalFilter(raster);
+            }break;
             case SEPIA :
             {
                     raster = filters.sepiaFilter(raster);

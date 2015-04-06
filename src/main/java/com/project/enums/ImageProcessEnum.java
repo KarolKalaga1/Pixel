@@ -5,5 +5,5 @@ package com.project.enums;
  *
  * @author Karol
  */
-public enum ImageProcessEnum {SEPIA,GRAY,BLACKWHITE,
+public enum ImageProcessEnum {CONVOLUTIONAL, SEPIA,GRAY,BLACKWHITE,
                               BRIGHTNESS}
