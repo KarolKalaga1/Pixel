@@ -14,9 +14,7 @@ public class Filters {
      private int pixels[] = new int[3];
     
 // Filtr konwolucyjny//
-    public WritableRaster convolutionalFilter(WritableRaster raster) {
-        int matrix[][] = {{0, 3, 0}, {0, 1, 0}, {0, 3, 0}};
-
+    public WritableRaster convolutionalFilter(WritableRaster raster, int matrix[][]) {
         for (int i = 0; i < raster.getWidth(); i++) {
             for (int j = 0; j < raster.getHeight(); j++) {
                 int tmpPixels[][][] = new int[3][3][3];

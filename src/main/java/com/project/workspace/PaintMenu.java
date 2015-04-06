@@ -32,6 +32,9 @@ public class PaintMenu extends JMenuBar{
         JMenuItem redo;
         
     JMenu view;
+    //powiększenie, oddalenie, pełny ekran
+    
+    JMenu image;
         JMenu rotation;
             JMenuItem right30;
             JMenuItem right45;
@@ -39,14 +42,17 @@ public class PaintMenu extends JMenuBar{
             JMenuItem horizontalRotation;
             JMenuItem verticalRotation;
         
-    JMenu image;        
-        JMenu filters;
-            JMenuItem convolutional;
+        JMenu colors;  
+            //jasność, kontrast, nasycenie, balans, barwa
             JMenuItem sepia;
             JMenuItem gray;
             JMenuItem blackWhite;
-            JMenuItem brightness;   
-        JMenu colors;
+            JMenuItem brightness;  
+            
+    JMenu filters;
+        JMenuItem sharpen;
+        JMenuItem box;
+        JMenuItem gaussian;
         
         
     JMenu tools;
@@ -94,7 +100,11 @@ public class PaintMenu extends JMenuBar{
        
         filters              = new JMenu("Filters");
         colors               = new JMenu("Colors");
-        convolutional        = new JMenuItem("Convolutional");
+        
+        sharpen              = new JMenuItem("Sharpen filter");
+        box                  = new JMenuItem("Box filter");
+        gaussian             = new JMenuItem("Gaussian filter");
+        
         sepia                = new JMenuItem("Sepia");
         gray                 = new JMenuItem("Gray");
         blackWhite           = new JMenuItem("BlackWhite");
@@ -129,7 +139,7 @@ public class PaintMenu extends JMenuBar{
         verticalRotation.setEnabled(false);
         
        
-       view.add(rotation);
+       image.add(rotation);
         
        undo.addActionListener(actionMenu);
        redo.addActionListener(actionMenu);
@@ -143,19 +153,25 @@ public class PaintMenu extends JMenuBar{
         add(edit);
         add(view);
         add(image);
+        add(filters);
         add(tools);
         add(help);
         
-        filters.add(convolutional);
-        filters.add(sepia);
-        filters.add(gray);
-        filters.add(blackWhite);
-        filters.add(brightness);
+        filters.add(sharpen);
+        filters.add(box);
+        filters.add(gaussian);
         
-        image.add(filters);
+        colors.add(sepia);
+        colors.add(gray);
+        colors.add(blackWhite);
+        colors.add(brightness);
+        
         image.add(colors);
         
-        convolutional.addActionListener(actionMenu);
+        sharpen.addActionListener(actionMenu);
+        box.addActionListener(actionMenu);
+        gaussian.addActionListener(actionMenu);
+        
         sepia.addActionListener(actionMenu);
         gray.addActionListener(actionMenu);
         blackWhite.addActionListener(actionMenu);
@@ -239,8 +255,14 @@ public class PaintMenu extends JMenuBar{
          JOptionPane.showMessageDialog(null, "\n"
                 + "Program created by Karol Kalaga.\nFor more information please write at kalagakarol@gmail.com", "About", JOptionPane.INFORMATION_MESSAGE, icon);
         }   
-        if(e.getSource()==convolutional){
-            Paint.paintStart.imageProcess(ImageProcessEnum.CONVOLUTIONAL);
+        if(e.getSource()==sharpen){
+            Paint.paintStart.imageProcess(ImageProcessEnum.SHARPEN);
+        }
+        if(e.getSource()==box){
+            Paint.paintStart.imageProcess(ImageProcessEnum.BOX);
+        }
+        if(e.getSource()==gaussian){
+            Paint.paintStart.imageProcess(ImageProcessEnum.GAUSSIAN);
         }
         if(e.getSource()==sepia){
          Paint.paintStart.imageProcess(ImageProcessEnum.SEPIA);

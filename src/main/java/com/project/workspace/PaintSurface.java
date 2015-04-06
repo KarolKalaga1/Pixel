@@ -174,9 +174,20 @@ public final class PaintSurface extends JScrollPane{
         
         switch(processEnum)
         {
-            case CONVOLUTIONAL :
+            case SHARPEN :
             {
-                raster = filters.convolutionalFilter(raster);
+                int matrix[][] = {{0, -2, 0}, {-2, 11, -2}, {0, -2, 0}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }break;
+            case BOX :
+            {
+                int matrix[][] = {{2, 1, 2}, {1, 0, 1}, {2, 1, 2}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }break;
+            case GAUSSIAN :
+            {
+                int matrix[][] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+                raster = filters.convolutionalFilter(raster, matrix);
             }break;
             case SEPIA :
             {
