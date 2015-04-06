@@ -50,12 +50,19 @@ public class Filters {
                 int weightSum = matrix[0][0] + matrix[0][1] + matrix[0][2]
                         + matrix[1][0] + matrix[1][1] + matrix[1][2]
                         + matrix[2][0] + matrix[2][1] + matrix[2][2];
+                
+                if (weightSum < 0) {
+                    weightSum *= -1;
+                } else if (weightSum == 0) {
+                    weightSum = 1;
+                }
 
                 int valueRedSum = 0,
                         valueGreenSum = 0,
                         valueBlueSum = 0;
 
-                valueRedSum = tmpPixels[0][0][0] * matrix[0][0]
+                valueRedSum = 
+                          tmpPixels[0][0][0] * matrix[0][0]
                         + tmpPixels[0][1][0] * matrix[0][1]
                         + tmpPixels[0][2][0] * matrix[0][2]
                         + tmpPixels[1][0][0] * matrix[1][0]
@@ -65,7 +72,8 @@ public class Filters {
                         + tmpPixels[2][1][0] * matrix[2][1]
                         + tmpPixels[2][2][0] * matrix[2][2];
 
-                valueGreenSum = tmpPixels[0][0][1] * matrix[0][0]
+                valueGreenSum = 
+                          tmpPixels[0][0][1] * matrix[0][0]
                         + tmpPixels[0][1][1] * matrix[0][1]
                         + tmpPixels[0][2][1] * matrix[0][2]
                         + tmpPixels[1][0][1] * matrix[1][0]
@@ -75,7 +83,8 @@ public class Filters {
                         + tmpPixels[2][1][1] * matrix[2][1]
                         + tmpPixels[2][2][1] * matrix[2][2];
 
-                valueBlueSum = tmpPixels[0][0][2] * matrix[0][0]
+                valueBlueSum = 
+                          tmpPixels[0][0][2] * matrix[0][0]
                         + tmpPixels[0][1][2] * matrix[0][1]
                         + tmpPixels[0][2][2] * matrix[0][2]
                         + tmpPixels[1][0][2] * matrix[1][0]
@@ -88,6 +97,24 @@ public class Filters {
                 ww[0] = valueRedSum / weightSum;
                 ww[1] = valueGreenSum / weightSum;
                 ww[2] = valueBlueSum / weightSum;
+                
+                
+                
+                if (ww[0] > 255) {
+                    ww[0] = 255;
+                } else if (ww[0] < 0) {
+                    ww[0] = 0;
+                }
+                if (ww[1] > 255) {
+                    ww[1] = 255;
+                } else if (ww[1] < 0) {
+                    ww[1] = 0;
+                }
+                if (ww[2] > 255) {
+                    ww[2] = 255;
+                } else if (ww[2] < 0) {
+                    ww[2] = 0;
+                }
 
                 raster.setPixel(i, j, ww);
             }
