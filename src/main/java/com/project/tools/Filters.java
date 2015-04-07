@@ -56,33 +56,34 @@ public class Filters {
         return raster;
     }
      // Filtr brightness//
-    public WritableRaster brightnessFilter(WritableRaster raster)
+   
+     public WritableRaster setBrightnessFilter(WritableRaster raster, int jasnosc)
     {
-        int jasnosc = 100;
+        int pixels[] = new int[3];
         double hsv[];
         for(int i=0;i<raster.getWidth();i++)
         {
 
             for(int j=0;j<raster.getHeight();j++)
             {
-
                 raster.getPixel(i, j, pixels);
                 hsv=rgb2hsv(pixels[0], pixels[1], pixels[2]);
                 hsv[2]=hsv[2]+jasnosc>240?240:hsv[2]+jasnosc;
 
                 ww=hsv2rgb(hsv[0], hsv[1], hsv[2]);
                 raster.setPixel(i, j, ww);
-
             }
 
        }
         return raster;
     }
-     // Filtr black&white//
-    public WritableRaster blackWhiteFilter(WritableRaster raster)
+     
+     
+     // Filtr black&white w oddzielnym panelu//
+    public WritableRaster setblackWhiteFilter(WritableRaster raster,int ton)
     {
         boolean better = true;
-        int ton = 100; 
+    
         Random r = new Random();
         double min = -(0.15*ton);
         double max = 0.15*ton;

@@ -6,6 +6,8 @@ import com.project.enums.ImageProcessEnum;
 import com.project.enums.FigureEnum;
 import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
+import com.project.filters.BlackWhite;
+import com.project.filters.Brightness;
 import com.project.tools.Filters;
 import java.awt.BasicStroke; 
 import java.awt.Color;
@@ -142,6 +144,22 @@ public final class PaintSurface extends JScrollPane{
         //Stop MouseMotion//
     }
 
+    //pobranie Rastra konieczne dla filtórw//
+    public WritableRaster getRaster() {
+        return raster;
+    }
+
+    public void setRaster(WritableRaster raster) {
+        this.raster = raster;
+    }
+
+    //akcja odmalowania panelu//
+  
+    public void repaints()
+    {
+        repaint();
+    }
+    
     //Pobranie rozmiaru narzedzia//
     public int getSizeTools() {
         return sizeTools;
@@ -152,11 +170,12 @@ public final class PaintSurface extends JScrollPane{
     }
 
     private BufferedImage copyImage(Image img) {
-    BufferedImage copyOfImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+    BufferedImage copyOfImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_3BYTE_BGR);
     Graphics g = copyOfImage.createGraphics();
     g.drawImage(img, 0, 0,getWidth(), getHeight(), null);
     return copyOfImage;
     }
+    
     // zapisywanie na stosie obrazu przed zmianami
     private void saveToStack(Image img) {
     undoStack.push(copyImage(img));
@@ -164,6 +183,7 @@ public final class PaintSurface extends JScrollPane{
     
     private void setImage(Image img) {  
     image = (BufferedImage) img;
+    setSize(image.getWidth(),image.getHeight());
     repaint();
     }
     
@@ -180,16 +200,20 @@ public final class PaintSurface extends JScrollPane{
             }break;
             case GRAY : 
             {
+             
                     raster = filters.grayFilter(raster);       
             }break;
             case BLACKWHITE : 
             {
-                    raster = filters.blackWhiteFilter(raster);
+                BlackWhite blackWhite = new BlackWhite(this, filters);
+                blackWhite.setVisible(true);
+//                    raster = filters.blackWhiteFilter(raster);
             }break;
                 
             case BRIGHTNESS :
             {
-                    raster = filters.brightnessFilter(raster);
+                Brightness brightness = new Brightness(this,filters);
+                brightness.setVisible(true);
             }
         }
         image.setData(raster);
@@ -256,7 +280,6 @@ public final class PaintSurface extends JScrollPane{
         ima=true;          
         setImage(rotateImage(image, (int) angle));  
     }
-    
 
     public BufferedImage getImage() {
         return image;

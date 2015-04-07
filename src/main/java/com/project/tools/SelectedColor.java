@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  *
  * @author Karol
- */
+ */                                                                                 
 public class SelectedColor {
     
    Map<ColorEnum,Color> Color = new HashMap<ColorEnum,Color>();

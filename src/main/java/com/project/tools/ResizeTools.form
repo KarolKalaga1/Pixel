@@ -144,7 +144,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="saveSize">
       <Properties>
-        <Property name="text" type="java.lang.String" value="save"/>
+        <Property name="text" type="java.lang.String" value="ok"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveSizeActionPerformed"/>

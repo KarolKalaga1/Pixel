@@ -81,7 +81,7 @@ public class ResizeTools extends JFrame {
 
         jLabel6.setText("Set size :");
 
-        saveSize.setText("save");
+        saveSize.setText("ok");
         saveSize.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveSizeActionPerformed(evt);
