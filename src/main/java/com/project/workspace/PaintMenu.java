@@ -59,6 +59,7 @@ public class PaintMenu extends JMenuBar {
         JMenuItem laplace;
 
     JMenu tools;
+        JMenuItem changeSize;
 
     JMenu help;
     JMenuItem helpPaint;
@@ -114,6 +115,8 @@ public class PaintMenu extends JMenuBar {
         gray = new JMenuItem("Gray");
         blackWhite = new JMenuItem("BlackWhite");
         brightness = new JMenuItem("Brightness");
+        
+        changeSize = new JMenuItem("Change Size");
 
         file.add(news);
         file.add(open);
@@ -142,7 +145,9 @@ public class PaintMenu extends JMenuBar {
         rotation.add(flipHorizontalyRotate90);
         rotation.add(flipVerticallyRotate90);
    
-
+        tools.add(changeSize);
+        changeSize.addActionListener(actionMenu);
+        
         view.add(rotation);
 
         undo.addActionListener(actionMenu);

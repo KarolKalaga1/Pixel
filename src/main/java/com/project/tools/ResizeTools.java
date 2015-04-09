@@ -20,7 +20,7 @@ public class ResizeTools extends JFrame {
         initComponents();
           
         setLocation(300, 250);
-        setTitle("Resize");    
+        setTitle("Resize Draw Tools");    
     }
 
 

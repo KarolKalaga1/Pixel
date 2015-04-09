@@ -27,6 +27,7 @@ public class Brightness extends PerformanceFilters{
     
     public Brightness(PaintSurface paintSurface,Filters filters){
         super(paintSurface, filters);
+        setTitle("Brightness");
         setLayout(new BorderLayout());
         jasnoscPlus  = 0;
         smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);

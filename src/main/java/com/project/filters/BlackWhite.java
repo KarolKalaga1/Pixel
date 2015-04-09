@@ -24,6 +24,7 @@ public class BlackWhite extends PerformanceFilters{
   
     public BlackWhite(PaintSurface paintSurface, Filters filters) {
         super(paintSurface, filters);
+        setTitle("BlackWhite");
         setLayout(new BorderLayout());
        
         smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);
