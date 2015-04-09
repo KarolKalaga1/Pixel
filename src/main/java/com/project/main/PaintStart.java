@@ -1,11 +1,14 @@
 
 package com.project.main;
 
+import com.project.algorithms.ImageTransformer;
+import com.project.algorithms.ImageTransformerLQ;
 import com.project.enums.ColorEnum;
 import com.project.tools.ResizeTools;
 import com.project.enums.FigureEnum;
 import com.project.enums.ImageProcessEnum;
 import com.project.enums.OptionsEnum;
+import com.project.enums.RotationEnum;
 import com.project.tools.SelectedColor;
 import com.project.workspace.PaintFigures;
 import com.project.workspace.PaintMenu;
@@ -36,6 +39,8 @@ public final class PaintStart extends JFrame {
     private  final PaintTool      paintTool;
     private  final PaintFigures   paintFigures;
     private  final PaintSelectColor paintSelectColor;
+    private  ImageTransformer parentTransformer = new ImageTransformerLQ();
+    
     private SelectedColor selectedColor;
     private ResizeTools  resizeTools;
     
@@ -192,9 +197,37 @@ public final class PaintStart extends JFrame {
      public void RedoOperation(){
         paintSurface.redo();
     }
-    public void rotationImage(double angle){
+    public void rotationImage(RotationEnum rotation){
         
-        paintSurface.rotationImage(angle);
+        switch(rotation)
+        {
+             case RIGHTTOP:
+            {
+                paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 5));
+            }break;
+            case BOTTOMRIGHT :
+            {
+                 paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 2));
+            }break;
+            case FLIPHORIZONTALLY:
+            {
+                paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 1));
+            }break;
+            case FLIPVERTICALLY :
+            {
+                paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 3));
+            }break;
+            case FLIPHORIZONATLLYROTATE90 :
+            {
+                paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 4));
+            }break;
+            case FLIPVERTICALLYROTATE90 :
+            {
+                paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 6));
+            }break;
+        }
+      
+      //  paintSurface.rotationImage(angle);
     }
    
     public void imageProcess(ImageProcessEnum processEnum){

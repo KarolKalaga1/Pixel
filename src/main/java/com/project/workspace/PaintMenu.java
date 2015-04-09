@@ -1,6 +1,7 @@
 package com.project.workspace;
 
 import com.project.enums.ImageProcessEnum;
+import com.project.enums.RotationEnum;
 import com.project.main.Paint;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ import javax.swing.*;
 public class PaintMenu extends JMenuBar {
 
     JMenu file;
+    //otwieranie, zapisywanie
     JMenuItem news;
     JMenuItem open;
     JMenuItem save;
@@ -27,33 +29,34 @@ public class PaintMenu extends JMenuBar {
     JMenuItem quit;
 
     JMenu edit;
+    //cofnij, wróc
     JMenuItem undo;
     JMenuItem redo;
 
     JMenu view;
     //powiększenie, oddalenie, pełny ekran
-
-    JMenu image;
     JMenu rotation;
-    JMenuItem right30;
-    JMenuItem right45;
-    JMenuItem right90;
+    JMenuItem rotate90;
+    JMenuItem rotate180;
+    JMenuItem flipHorizontalyRotate90;
+    JMenuItem flipVerticallyRotate90;
     JMenuItem horizontalRotation;
     JMenuItem verticalRotation;
 
-    JMenu colors;
-    //jasność, kontrast, nasycenie, balans, barwa
-    JMenuItem sepia;
-    JMenuItem gray;
-    JMenuItem blackWhite;
-    JMenuItem brightness;
 
     JMenu filters;
-    JMenuItem sharpen;
-    JMenuItem sharpen_more;
-    JMenuItem box;
-    JMenuItem gaussian;
-    JMenuItem laplace;
+    //standardow filtry, konwolucyjne, balans kolorów
+    JMenu standardFilters;
+        JMenuItem sepia;
+        JMenuItem gray;
+        JMenuItem blackWhite;
+        JMenuItem brightness;
+    JMenu convolutionFilters;
+        JMenuItem sharpen;
+        JMenuItem sharpen_more;
+        JMenuItem box;
+        JMenuItem gaussian;
+        JMenuItem laplace;
 
     JMenu tools;
 
@@ -67,7 +70,6 @@ public class PaintMenu extends JMenuBar {
         file = new JMenu("File");
         edit = new JMenu("Edit");
         view = new JMenu("View");
-        image = new JMenu("Image");
         tools = new JMenu("Tools");
         help = new JMenu("Help");
 
@@ -91,14 +93,16 @@ public class PaintMenu extends JMenuBar {
 
         rotation = new JMenu("Rotation");
 
-        horizontalRotation = new JMenuItem("Horizontal Rotation");
-        verticalRotation = new JMenuItem("Vertical Rotation");
-        right30 = new JMenuItem("right 30");
-        right45 = new JMenuItem("right 45");
-        right90 = new JMenuItem("right 90");
+        horizontalRotation = new JMenuItem("Flip Horizontal");
+        verticalRotation = new JMenuItem("Flip Vertical");
+        rotate90 = new JMenuItem("Rotate 90°");
+        rotate180 = new JMenuItem("Rotate 180°");
+        flipHorizontalyRotate90 = new JMenuItem("Flip Horizontally and rotate 90°");
+        flipVerticallyRotate90 = new JMenuItem("Flip Vertically and rotate 90°");
 
         filters = new JMenu("Filters");
-        colors = new JMenu("Colors");
+        standardFilters = new JMenu("Standard filters");
+        convolutionFilters = new JMenu("Convolution filters");
 
         sharpen = new JMenuItem("Sharpen");
         sharpen_more = new JMenuItem("Sharpen more");
@@ -129,44 +133,47 @@ public class PaintMenu extends JMenuBar {
 
         add(file);
 
-        rotation.add(horizontalRotation);
-        rotation.add(verticalRotation);
+        rotation.add(rotate90);
+        rotation.add(rotate180);
         rotation.addSeparator();
-        rotation.add(right30);
-        rotation.add(right45);
-        rotation.add(right90);
-        horizontalRotation.setEnabled(false);
-        verticalRotation.setEnabled(false);
+        rotation.add(horizontalRotation);
+        rotation.add(verticalRotation); 
+        rotation.addSeparator();
+        rotation.add(flipHorizontalyRotate90);
+        rotation.add(flipVerticallyRotate90);
+   
 
-        image.add(rotation);
+        view.add(rotation);
 
         undo.addActionListener(actionMenu);
         redo.addActionListener(actionMenu);
-        right45.addActionListener(actionMenu);
-        right30.addActionListener(actionMenu);
-        right90.addActionListener(actionMenu);
+        rotate90.addActionListener(actionMenu);
+        rotate180.addActionListener(actionMenu);
+        flipHorizontalyRotate90.addActionListener(actionMenu);
+        flipVerticallyRotate90.addActionListener(actionMenu);
         verticalRotation.addActionListener(actionMenu);
         horizontalRotation.addActionListener(actionMenu);
 
         add(edit);
         add(view);
-        add(image);
+        add(view);
         add(filters);
         add(tools);
         add(help);
 
-        filters.add(sharpen);
-        filters.add(sharpen_more);
-        filters.add(box);
-        filters.add(gaussian);
-        filters.add(laplace);
+        convolutionFilters.add(sharpen);
+        convolutionFilters.add(sharpen_more);
+        convolutionFilters.add(box);
+        convolutionFilters.add(gaussian);
+        convolutionFilters.add(laplace);
 
-        colors.add(sepia);
-        colors.add(gray);
-        colors.add(blackWhite);
-        colors.add(brightness);
+        standardFilters.add(sepia);
+        standardFilters.add(gray);
+        standardFilters.add(blackWhite);
+        standardFilters.add(brightness);
 
-        image.add(colors);
+        filters.add(convolutionFilters);
+        filters.add(standardFilters);
 
         sharpen.addActionListener(actionMenu);
         sharpen_more.addActionListener(actionMenu);
@@ -237,14 +244,25 @@ public class PaintMenu extends JMenuBar {
                     JOptionPane.showMessageDialog(null, "Open file Exception " + ex.getMessage(), "Open exception", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-            if (e.getSource() == right30) {
-                Paint.paintStart.rotationImage(30);
+            if(e.getSource() ==horizontalRotation)
+            {
+                Paint.paintStart.rotationImage(RotationEnum.FLIPHORIZONTALLY);
             }
-            if (e.getSource() == right45) {
-                Paint.paintStart.rotationImage(45);
+            if(e.getSource() ==verticalRotation)
+            {
+                Paint.paintStart.rotationImage(RotationEnum.FLIPVERTICALLY);
             }
-            if (e.getSource() == right90) {
-                Paint.paintStart.rotationImage(90);
+            if (e.getSource() == rotate180) {
+                Paint.paintStart.rotationImage(RotationEnum.BOTTOMRIGHT);
+            }
+            if (e.getSource() == rotate90) {
+                Paint.paintStart.rotationImage(RotationEnum.RIGHTTOP);
+            }
+            if (e.getSource() == flipHorizontalyRotate90) {
+                Paint.paintStart.rotationImage(RotationEnum.FLIPHORIZONATLLYROTATE90);
+            }
+              if (e.getSource() == flipVerticallyRotate90) {
+                Paint.paintStart.rotationImage(RotationEnum.FLIPVERTICALLYROTATE90);
             }
 
             if (e.getSource() == undo) {

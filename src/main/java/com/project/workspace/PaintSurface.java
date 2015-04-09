@@ -6,6 +6,8 @@ import com.project.enums.ImageProcessEnum;
 import com.project.enums.FigureEnum;
 import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
+import com.project.algorithms.ImageTransformer;
+import com.project.algorithms.ImageTransformerLQ;
 import com.project.filters.BlackWhite;
 import com.project.filters.Brightness;
 import com.project.tools.Filters;
@@ -35,7 +37,7 @@ import javax.swing.JScrollPane;
 public final class PaintSurface extends JScrollPane{
 
     //zmienna przechowująca domysly rozmiar obrazu//
-    private BufferedImage  image  = new BufferedImage(1500, 1200, BufferedImage.TYPE_INT_RGB);  
+    private BufferedImage  image  = new BufferedImage(1500, 1200, BufferedImage.TYPE_3BYTE_BGR);  
     private WritableRaster raster;
     
     private Image         imageDrow;
@@ -56,6 +58,8 @@ public final class PaintSurface extends JScrollPane{
     private ImageIcon iconBrush;
     private ImageIcon iconPaint;
     private ImageIcon iconEraser;
+    
+    //ImageTransformer parentTransformer = new ImageTransformerLQ();
     
     public PaintSurface() { 
         
@@ -160,19 +164,20 @@ public final class PaintSurface extends JScrollPane{
         repaint();
     }
     
-    //Pobranie rozmiaru narzedzia//
+    //Pobranie rozmiaru narzedzi//
     public int getSizeTools() {
         return sizeTools;
     }
-    //Ustawienie rozmiaru narzedzia//
+    //Ustawienie rozmiaru narzedzi//
     public void setSizeTools(int sizeTools) {
         this.sizeTools = sizeTools;
     }
 
+    //poprawenie kopiowanie zdjecia bez (undo,redo); Przechowywanie orginalnego rozmiaru.
     private BufferedImage copyImage(Image img) {
-    BufferedImage copyOfImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+    BufferedImage copyOfImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_3BYTE_BGR);
     Graphics g = copyOfImage.createGraphics();
-    g.drawImage(img, 0, 0,getWidth(), getHeight(), null);
+    g.drawImage(img, 0, 0,copyOfImage.getWidth(), copyOfImage.getHeight(), null);
     return copyOfImage;
     }
     
@@ -194,6 +199,33 @@ public final class PaintSurface extends JScrollPane{
         
         switch(processEnum)
         {
+            //filtry konwolucyjne//          
+             case SHARPEN: {
+                int matrix[][] = {{-1, -1, -1}, {-1, 20, -1}, {-1, -1, -1}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }
+            break;
+            case SHARPEN_MORE: {
+                int matrix[][] = {{-1, -1, -1}, {-1, 10, -1}, {-1, -1, -1}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }
+            break;
+            case BOX: {
+                int matrix[][] = {{2, 1, 2}, {1, 0, 1}, {2, 1, 2}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }
+            break;
+            case GAUSSIAN: {
+                int matrix[][] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+                raster = filters.convolutionalFilter(raster, matrix);
+            }
+            break;
+            case LAPLACE: {
+                int matrix[][] = {{-1, -2, -1}, {-2, 6, -2}, {-1, -2, -1}};//DOPRACOWAĆ MACIERZ!!!
+                raster = filters.convolutionalFilter(raster, matrix);
+            }break;
+            
+            //klasyczne filtry//
             case SEPIA :
             {
                     raster = filters.sepiaFilter(raster);
@@ -201,7 +233,7 @@ public final class PaintSurface extends JScrollPane{
             case GRAY : 
             {
              
-                    raster = filters.grayFilter(raster);       
+                raster = filters.grayFilter(raster);       
             }break;
             case BLACKWHITE : 
             {
@@ -275,10 +307,13 @@ public final class PaintSurface extends JScrollPane{
         g2d.dispose();
         return rotatedBI;
     }
-
+    //sprawdzenie
     public void rotationImage(double angle){
-        ima=true;          
-        setImage(rotateImage(image, (int) angle));  
+        
+       // image=parentTransformer.transform(image, 0.5, 5);
+      //  repaint();
+    // ima=true;          
+       // setImage(rotateImage(image, (int) angle));  
     }
 
     public BufferedImage getImage() {

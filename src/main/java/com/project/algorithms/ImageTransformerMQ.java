@@ -15,6 +15,7 @@ public class ImageTransformerMQ implements ImageTransformer
    
     public ImageTransformerMQ()
     {
+       
         qualityOffset = 0.5d;
     }
  
