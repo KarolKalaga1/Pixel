@@ -6,8 +6,6 @@ import com.project.enums.ImageProcessEnum;
 import com.project.enums.FigureEnum;
 import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
-import com.project.algorithms.ImageTransformer;
-import com.project.algorithms.ImageTransformerLQ;
 import com.project.filters.BlackWhite;
 import com.project.filters.Brightness;
 import com.project.tools.Filters;
@@ -21,8 +19,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -38,6 +36,7 @@ public final class PaintSurface extends JScrollPane{
 
     //zmienna przechowująca domysly rozmiar obrazu//
     private BufferedImage  image  = new BufferedImage(1500, 1200, BufferedImage.TYPE_3BYTE_BGR);  
+   // private BufferedImage  imag   = new BufferedImage
     private WritableRaster raster;
     
     private Image         imageDrow;
@@ -62,7 +61,6 @@ public final class PaintSurface extends JScrollPane{
     //ImageTransformer parentTransformer = new ImageTransformerLQ();
     
     public PaintSurface() { 
-        
         //Wczytywanie skórek//
         this.iconPen    = new ImageIcon(this.getClass().getResource("/pen.png"));
         this.iconBrush  = new ImageIcon(this.getClass().getResource("/brush.png"));
@@ -78,37 +76,41 @@ public final class PaintSurface extends JScrollPane{
           
         this.sizeTools = 1;
         this.setSize(1500, 1200);
+      
         this.colorPencil=new Color(0,0,0);
-     
       //ustawienie rozmiaru okna po którym mozna rysowac//
       setPreferredSize(new Dimension(getWidth(),getHeight()));
        
-      //Akcje przewidzane z obsługą myszki MouseListener i MouseMotion//
-      addMouseListener(new MouseAdapter(){
-       
+      
+        addMouseListener(new MouseListener() {
+
             @Override
-            public void mousePressed(MouseEvent e)
-            {
-                saveToStack(image);
-                x=e.getX();
-                y=e.getY();
-                 checkMouse(e);
-                  repaint();                   
+            public void mouseClicked(MouseEvent e) {
             }
 
             @Override
-            public void mouseDragged(MouseEvent e) { 
-
-                x1=e.getX();
-                y1=e.getY();
-                 checkMouse(e);
-                repaint();
+            public void mousePressed(MouseEvent e) {
+                saveToStack(image);
+                x=e.getX();
+                y=e.getY();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                checkMouse(e);
-            }});
+                 checkMouse(e);
+                // repaint();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+      //Akcje przewidzane z obsługą myszki MouseListener i MouseMotion//
+
       //Stop MouseListener//
 
         addMouseMotionListener(new MouseMotionAdapter(){
@@ -147,7 +149,6 @@ public final class PaintSurface extends JScrollPane{
             }});
         //Stop MouseMotion//
     }
-
     //pobranie Rastra konieczne dla filtórw//
     public WritableRaster getRaster() {
         return raster;
@@ -155,13 +156,6 @@ public final class PaintSurface extends JScrollPane{
 
     public void setRaster(WritableRaster raster) {
         this.raster = raster;
-    }
-
-    //akcja odmalowania panelu//
-  
-    public void repaints()
-    {
-        repaint();
     }
     
     //Pobranie rozmiaru narzedzi//
@@ -189,7 +183,7 @@ public final class PaintSurface extends JScrollPane{
     private void setImage(Image img) {  
     image = (BufferedImage) img;
     setSize(image.getWidth(),image.getHeight());
-    repaint();
+    this.repaint();
     }
     
     //wybór Filtrów//
@@ -231,8 +225,7 @@ public final class PaintSurface extends JScrollPane{
                     raster = filters.sepiaFilter(raster);
             }break;
             case GRAY : 
-            {
-             
+            {           
                 raster = filters.grayFilter(raster);       
             }break;
             case BLACKWHITE : 
@@ -249,7 +242,7 @@ public final class PaintSurface extends JScrollPane{
             }
         }
         image.setData(raster);
-        repaint();
+        this.repaint();
     }
     
     //przywrócenie poprzedniego stanu do tyłu
@@ -271,64 +264,41 @@ public final class PaintSurface extends JScrollPane{
     public Graphics getGraphics() {
         return super.getGraphics(); 
     }
-
+   
     @Override
     public void paint(Graphics g2){  
-   
+        
         graphics2d = (Graphics2D) g2;
+    
 
             if(image!=null){
             imageDrow = image;
             }        
            graphics2d = (Graphics2D)imageDrow.getGraphics();
            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
- 
-           g2.drawImage(image, 0, 0, null);
+           //graphics2d.drawImage(image, 0, 0, this);
+          
+           g2.drawImage(image, 0, 0,image.getWidth(),image.getHeight(),null);
+           
     }
     
-    //Obracanie  za pomocą wbudowanej transformacji w java
-    public BufferedImage rotateImage(Image image, int angle)
+    public void pai(Graphics2D g2)
     {
-        
-        ima=true;
-        double sin = Math.abs(Math.sin(angle));
-        double cos = Math.abs(Math.cos(angle));
-        int originalWidth = image.getWidth(null);
-        int originalHeight = image.getHeight(null);
-        int newWidth = (int) Math.floor(originalWidth * cos + originalHeight * sin);
-        int newHeight = (int) Math.floor(originalHeight * cos + originalWidth * sin);
-        setPreferredSize(new Dimension(newWidth, newHeight));
-        BufferedImage rotatedBI = new BufferedImage(newWidth, newHeight, BufferedImage.TRANSLUCENT);
-        Graphics2D g2d = rotatedBI.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.translate((newWidth - originalWidth) / 2, (newHeight - originalHeight) / 2);
-        g2d.rotate(angle, originalWidth / 2, originalHeight / 2);
-        g2d.drawImage(image, 0, 0, null);
-        g2d.dispose();
-        return rotatedBI;
+        g2 = graphics2d;
+        g2.drawImage(image, 0, 0, 300, 300, this);
     }
-    //sprawdzenie
-    public void rotationImage(double angle){
-        
-       // image=parentTransformer.transform(image, 0.5, 5);
-      //  repaint();
-    // ima=true;          
-       // setImage(rotateImage(image, (int) angle));  
-    }
-
+    
+ 
     public BufferedImage getImage() {
         return image;
     }
 
     public void setImages(BufferedImage image) {
+        saveToStack(this.image);
         this.image = image;
-        repaint();
+       // repaint();
     }
-
-    @Override
-    public void setPreferredSize(Dimension preferredSize) {
-        super.setPreferredSize(preferredSize); 
-    }
+    
     
     //Ustawienie opcji z Panelu po prawej stronie,
     //sprawdzenie czy nie jest to zmiana koloru,
@@ -378,7 +348,7 @@ public final class PaintSurface extends JScrollPane{
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 }
                 graphics2d.drawLine(x, y, x1, y1);
-                repaint();
+                this.repaint();
                 x = x1;
                 y = y1;
             }break;
@@ -387,7 +357,7 @@ public final class PaintSurface extends JScrollPane{
                 graphics2d.setColor(colorPencil);
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 graphics2d.drawLine(x, y, x1, y1);
-                repaint();
+                this.repaint();
                 x = x1;
                 y = y1; 
             }break;
@@ -403,7 +373,7 @@ public final class PaintSurface extends JScrollPane{
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 }
                 graphics2d.drawLine(x, y, x1, y1);
-                repaint();
+                this.repaint();
                  x = x1;
                  y = y1;
             }break;
@@ -428,6 +398,7 @@ public final class PaintSurface extends JScrollPane{
      
         if(options==OptionsEnum.PAINT){
             raster = image.getRaster();
+            if(x1<=image.getWidth() &&y1<=image.getHeight()){
             raster.getPixel(x, y, pixels);
             
             int col = image.getRGB(x1, y1);
@@ -435,9 +406,11 @@ public final class PaintSurface extends JScrollPane{
             Color color =new Color(col);
             
              new FloodFill().floodFill(image, new Point(x1, y1),color, colorPencil);
+            }
 
-            repaint();
+            this.repaint();
         }
+
         if(figure!=null)
         {
                 
@@ -448,31 +421,32 @@ public final class PaintSurface extends JScrollPane{
                 graphics2d.setColor(colorPencil);
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 graphics2d.drawLine(x, y,x1,y1);
-                repaint();   
+               this.repaint();   
             }break;
             case RECT :
             {
                 graphics2d.setColor(colorPencil);
                 graphics2d.setStroke(new BasicStroke(sizeTools));
                 graphics2d.drawRect(x,y,w,h);
-                repaint();         
+               this.repaint();         
             }break;
             case CIRCLE :
             {
                  graphics2d.setColor(colorPencil);
                  graphics2d.setStroke(new BasicStroke(sizeTools));
                  graphics2d.drawOval(x,y,Math.abs(x-x1),Math.abs(y-y1));
-                 repaint();
+                 this.repaint();
             }break;
             case ROUNDRECT :
             {
                  graphics2d.setColor(colorPencil);
                  graphics2d.setStroke(new BasicStroke(sizeTools));
                  graphics2d.drawRoundRect(x, y,w,h,20,20);
-                 repaint();  
+                 this.repaint();  
             }break;
         }
         }
+     
     }
     
 }

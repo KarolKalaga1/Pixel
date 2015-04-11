@@ -9,6 +9,7 @@ import com.project.enums.FigureEnum;
 import com.project.enums.ImageProcessEnum;
 import com.project.enums.OptionsEnum;
 import com.project.enums.RotationEnum;
+import com.project.tools.ChangeImageSize;
 import com.project.tools.SelectedColor;
 import com.project.workspace.PaintFigures;
 import com.project.workspace.PaintMenu;
@@ -104,16 +105,12 @@ public final class PaintStart extends JFrame {
           paintTool      = new PaintTool();
           paintFigures   = new PaintFigures();
           paintSelectColor = new PaintSelectColor();
-
-
         add(paintMenu , BorderLayout.NORTH);
         add(paintFigures , BorderLayout.WEST);
         add(paintTool , BorderLayout.EAST);
         add(new JScrollPane(paintSurface) , BorderLayout.CENTER);
         add(paintSelectColor,BorderLayout.SOUTH);
-        
-        
-        
+
         initializeSurface();
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -160,7 +157,6 @@ public final class PaintStart extends JFrame {
     
     public void setBufferedImage(BufferedImage image){
         paintSurface.setImages(image);
-        repaint();
     }
     
     public void NewDocument(){
@@ -176,7 +172,6 @@ public final class PaintStart extends JFrame {
     public void setSizeSurface(Dimension dimension){
         Height = (int) dimension.getHeight();
         Width  = (int) dimension.getWidth();
-        
         paintSurface.setPreferredSize(dimension);
     }
     
@@ -203,6 +198,12 @@ public final class PaintStart extends JFrame {
         {
              case RIGHTTOP:
             {
+                
+                //setPrefferedSize tak jak przy wczytywaniu zdjecia przesyłane do PaintSurface
+                BufferedImage image=parentTransformer.transform(paintSurface.getImage(), 1, 5);
+                int width  = image.getWidth();
+                int height = image.getHeight();
+                //wysyłaenie Dimension // i tak samo zrobic w przypadku zmiany rozmiaru
                 paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 5));
             }break;
             case BOTTOMRIGHT :
@@ -226,7 +227,7 @@ public final class PaintStart extends JFrame {
                 paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 6));
             }break;
         }
-      
+      repaint();
       //  paintSurface.rotationImage(angle);
     }
    
@@ -239,5 +240,10 @@ public final class PaintStart extends JFrame {
         resizeTools = new ResizeTools(paintSurface);
         resizeTools.setVisible(true);
     }
-    
+    public void changeImageSize()
+    {
+        ChangeImageSize changeImageSize = new ChangeImageSize(paintSurface,parentTransformer);
+        changeImageSize.setVisible(true);
+    }
+ 
 }

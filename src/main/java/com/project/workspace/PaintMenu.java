@@ -3,6 +3,7 @@ package com.project.workspace;
 import com.project.enums.ImageProcessEnum;
 import com.project.enums.RotationEnum;
 import com.project.main.Paint;
+import com.project.tools.ChangeImageSize;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -308,7 +309,10 @@ public class PaintMenu extends JMenuBar {
             if (e.getSource() == brightness) {
                 Paint.paintStart.imageProcess(ImageProcessEnum.BRIGHTNESS);
             }
-
+            if(e.getSource() == changeSize){
+                Paint.paintStart.changeImageSize();
+            }
+            
         }
 
     }
