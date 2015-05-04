@@ -124,7 +124,8 @@ public final class PaintStart extends JFrame {
         graphics =  ( Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, Width, Height);
-        repaint();
+        paintSurface.repaint();
+    //repaint();
     }
     
     public String getSaveFileName(){
@@ -166,7 +167,8 @@ public final class PaintStart extends JFrame {
         graphics =  ( Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, Width, Height);
-        repaint();
+        paintSurface.repaint();
+        //repaint();
     }
     
     public void setSizeSurface(Dimension dimension){
@@ -227,8 +229,8 @@ public final class PaintStart extends JFrame {
                 paintSurface.setImages(parentTransformer.transform(paintSurface.getImage(), 1, 6));
             }break;
         }
-      repaint();
-      //  paintSurface.rotationImage(angle);
+        paintSurface.repaint();
+      //repaint();`
     }
    
     public void imageProcess(ImageProcessEnum processEnum){

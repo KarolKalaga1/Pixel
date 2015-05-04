@@ -20,7 +20,7 @@ import javax.swing.event.ChangeListener;
  */
 public class Brightness extends PerformanceFilters{
 
-    private FiltersAction       filtersAction = new FiltersAction();
+    private final FiltersAction       filtersAction = new FiltersAction();
 
     
     private int jasnoscPlus;
@@ -30,7 +30,14 @@ public class Brightness extends PerformanceFilters{
         setTitle("Brightness");
         setLayout(new BorderLayout());
         jasnoscPlus  = 0;
-        smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);
+        
+    if(paintSurface.getImage().getWidth()>800 || paintSurface.getImage().getHeight()>600)
+        {
+            smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);  
+        }else{
+            smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.99, 0); 
+        }
+            
            
         setSize(smallImage.getWidth()+5,smallImage.getHeight()+40);
         setLocation(200, 50);
@@ -64,6 +71,7 @@ public class Brightness extends PerformanceFilters{
             if(e.getSource() == buttonAcctept)
             {
                 paintSurface.setRaster(filters.setBrightnessFilter(paintSurface.getRaster(), jasnoscPlus));
+               // paintSurface.repaint();
                 dispose();
             }
         }
@@ -73,7 +81,12 @@ public class Brightness extends PerformanceFilters{
             if(e.getSource() == changeValue)
             {
                jasnoscPlus  = changeValue.getValue();
-               smallImage   = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);
+             if(paintSurface.getImage().getWidth()>800 || paintSurface.getImage().getHeight()>600)
+                {
+                    smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);  
+                }else{
+                    smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.99, 0); 
+                }
                imaPanel.changes(smallImage,jasnoscPlus,ImageProcessEnum.BRIGHTNESS);
             }
         }

@@ -12,11 +12,10 @@ import javax.swing.JFrame;
 public class ResizeTools extends JFrame {
 
     BufferedImage image = null;
-    PaintSurface paintSurface;
+    private final PaintSurface paintSurface;
     public ResizeTools(PaintSurface paintSurface) {
         
        this.paintSurface = paintSurface;
-  
         initComponents();
           
         setLocation(300, 250);

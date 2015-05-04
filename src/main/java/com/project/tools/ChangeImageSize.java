@@ -13,14 +13,14 @@ import javax.swing.JOptionPane;
  */
 public class ChangeImageSize extends javax.swing.JFrame {
 
-    private PaintSurface paintSurface;
-    private ImageTransformer imageTransformer;
+    private final PaintSurface paintSurface;
+    private final ImageTransformer imageTransformer;
     public ChangeImageSize(PaintSurface paintSurface, ImageTransformer parentTransformer) {
         
         this.paintSurface     = paintSurface;
         this.imageTransformer = parentTransformer;
         setTitle("Change Image Size");
-        
+        setLocation(300, 250);
        
         initComponents();
     }
@@ -85,16 +85,23 @@ public class ChangeImageSize extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
       
+       
         if(Integer.valueOf(jSpinner1.getValue().toString())<=100 && Integer.valueOf(jSpinner1.getValue().toString())>=1)
         {
         int size = Integer.valueOf(jSpinner1.getValue().toString());
             BufferedImage im = imageTransformer.transform(paintSurface.getImage(),(0.01*size),0);
+            if(im.getWidth()<200 ||im.getHeight()<200)
+            {
+                JOptionPane.showMessageDialog(null,"You can't set smaller image", "Please verify",JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            }else{
             int x=im.getWidth();
             int y=im.getHeight();
             paintSurface.setPreferredSize(new Dimension(x-20, y-50));
-            
-             paintSurface.setImages(im);
-        dispose();
+            paintSurface.setImages(im);
+            }
+
+            dispose();
         }else
         {
             JOptionPane.showMessageDialog(null,"Please set value in between 1-100", "Please verify",JOptionPane.INFORMATION_MESSAGE);

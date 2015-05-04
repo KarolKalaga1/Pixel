@@ -23,6 +23,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import static java.awt.image.ImageObserver.HEIGHT;
+import static java.awt.image.ImageObserver.WIDTH;
 import java.awt.image.WritableRaster;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
@@ -41,6 +43,7 @@ public final class PaintSurface extends JScrollPane{
     
     private Image         imageDrow;
     private Graphics2D    graphics2d;
+    private Graphics      graphics;
     private Color         colorPencil;  
     private OptionsEnum   options;
     private FigureEnum    figure;
@@ -61,13 +64,14 @@ public final class PaintSurface extends JScrollPane{
     //ImageTransformer parentTransformer = new ImageTransformerLQ();
     
     public PaintSurface() { 
+        
         //Wczytywanie skórek//
         this.iconPen    = new ImageIcon(this.getClass().getResource("/pen.png"));
         this.iconBrush  = new ImageIcon(this.getClass().getResource("/brush.png"));
         this.iconPaint  = new ImageIcon(this.getClass().getResource("/paint.png"));
-        this.iconEraser = new ImageIcon(this.getClass().getResource("/erasers.png"));
+        this.iconEraser = new ImageIcon(this.getClass().getResource("/erasers.png"));   
+        //Wartości inicjalizujące// 
         
-        // wartości inicjalizujące// 
         this.filters   = new Filters();
         this.redoStack = new SizedStack<Image>(3);
         this.undoStack = new SizedStack<Image>(3);
@@ -90,6 +94,7 @@ public final class PaintSurface extends JScrollPane{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                
                 saveToStack(image);
                 x=e.getX();
                 y=e.getY();
@@ -97,8 +102,8 @@ public final class PaintSurface extends JScrollPane{
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                 checkMouse(e);
-                // repaint();
+                checkMouse(e);
+               
             }
 
             @Override
@@ -115,13 +120,16 @@ public final class PaintSurface extends JScrollPane{
 
         addMouseMotionListener(new MouseMotionAdapter(){
             
+            
             @Override
             public void mouseDragged(MouseEvent e){
-                    if(getGraphics() != null)
+                    
+                  if(getGraphics() != null)
                     {
                        checkMousePencil(e);
                     }
                 }  
+            
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -169,6 +177,7 @@ public final class PaintSurface extends JScrollPane{
 
     //poprawenie kopiowanie zdjecia bez (undo,redo); Przechowywanie orginalnego rozmiaru.
     private BufferedImage copyImage(Image img) {
+        
     BufferedImage copyOfImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_3BYTE_BGR);
     Graphics g = copyOfImage.createGraphics();
     g.drawImage(img, 0, 0,copyOfImage.getWidth(), copyOfImage.getHeight(), null);
@@ -180,7 +189,7 @@ public final class PaintSurface extends JScrollPane{
     undoStack.push(copyImage(img));
     }
     
-    private void setImage(Image img) {  
+    private void setImage(Image img) {
     image = (BufferedImage) img;
     setSize(image.getWidth(),image.getHeight());
     this.repaint();
@@ -197,52 +206,65 @@ public final class PaintSurface extends JScrollPane{
              case SHARPEN: {
                 int matrix[][] = {{-1, -1, -1}, {-1, 20, -1}, {-1, -1, -1}};
                 raster = filters.convolutionalFilter(raster, matrix);
+                image.setData(raster);
+                this.repaint();
             }
             break;
             case SHARPEN_MORE: {
                 int matrix[][] = {{-1, -1, -1}, {-1, 10, -1}, {-1, -1, -1}};
                 raster = filters.convolutionalFilter(raster, matrix);
+                image.setData(raster);
+                this.repaint();
             }
             break;
             case BOX: {
                 int matrix[][] = {{2, 1, 2}, {1, 0, 1}, {2, 1, 2}};
                 raster = filters.convolutionalFilter(raster, matrix);
+                image.setData(raster);
+                this.repaint();
             }
             break;
             case GAUSSIAN: {
                 int matrix[][] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
                 raster = filters.convolutionalFilter(raster, matrix);
+                image.setData(raster);
+                this.repaint();
             }
             break;
             case LAPLACE: {
                 int matrix[][] = {{-1, -2, -1}, {-2, 6, -2}, {-1, -2, -1}};//DOPRACOWAĆ MACIERZ!!!
                 raster = filters.convolutionalFilter(raster, matrix);
+                image.setData(raster);
+                this.repaint();
             }break;
             
             //klasyczne filtry//
             case SEPIA :
             {
-                    raster = filters.sepiaFilter(raster);
+                raster = filters.sepiaFilter(raster);
+                image.setData(raster);
+                this.repaint();
             }break;
             case GRAY : 
             {           
-                raster = filters.grayFilter(raster);       
+                raster = filters.grayFilter(raster);     
+                image.setData(raster);
+                this.repaint();
             }break;
             case BLACKWHITE : 
             {
                 BlackWhite blackWhite = new BlackWhite(this, filters);
                 blackWhite.setVisible(true);
-//                    raster = filters.blackWhiteFilter(raster);
+                image.setData(raster);
             }break;
                 
             case BRIGHTNESS :
             {
                 Brightness brightness = new Brightness(this,filters);
                 brightness.setVisible(true);
+                image.setData(raster);
             }
         }
-        image.setData(raster);
-        this.repaint();
     }
     
     //przywrócenie poprzedniego stanu do tyłu
@@ -263,32 +285,26 @@ public final class PaintSurface extends JScrollPane{
     @Override
     public Graphics getGraphics() {
         return super.getGraphics(); 
+        
     }
-   
+
+ 
     @Override
     public void paint(Graphics g2){  
         
         graphics2d = (Graphics2D) g2;
     
-
-            if(image!=null){
-            imageDrow = image;
-            }        
+        if(image!=null){
+         imageDrow = image;
+           }        
            graphics2d = (Graphics2D)imageDrow.getGraphics();
            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
            //graphics2d.drawImage(image, 0, 0, this);
-          
-           g2.drawImage(image, 0, 0,image.getWidth(),image.getHeight(),null);
-           
+           g2.clearRect(0, 0, getWidth(), getHeight());
+           g2.drawImage(image, 0, 0, image.getWidth(),image.getHeight(), Color.DARK_GRAY, null);
+           //g2.drawImage(image, 0, 0,image.getWidth(),image.getHeight(),null);
     }
-    
-    public void pai(Graphics2D g2)
-    {
-        g2 = graphics2d;
-        g2.drawImage(image, 0, 0, 300, 300, this);
-    }
-    
- 
+   
     public BufferedImage getImage() {
         return image;
     }
@@ -296,10 +312,9 @@ public final class PaintSurface extends JScrollPane{
     public void setImages(BufferedImage image) {
         saveToStack(this.image);
         this.image = image;
-       // repaint();
+        //repaint();
     }
-    
-    
+        
     //Ustawienie opcji z Panelu po prawej stronie,
     //sprawdzenie czy nie jest to zmiana koloru,
     //jeśli tak to wywołanie dialogu 
@@ -379,12 +394,14 @@ public final class PaintSurface extends JScrollPane{
             }break;
         }
         }
+ 
+        
     }
 
     //Sprawdzenie akcji myszy dla wypełniania obszaru kolorem 
     //oraz dla rysowania figur
     public void checkMouse(MouseEvent e){
-        
+            
         x1 = e.getX();
         y1 = e.getY();
            int w = x - x1;
@@ -446,7 +463,9 @@ public final class PaintSurface extends JScrollPane{
             }break;
         }
         }
-     
+       //?
+                resize(WIDTH, HEIGHT); 
+
     }
     
 }

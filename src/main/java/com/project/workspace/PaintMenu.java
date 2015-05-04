@@ -3,7 +3,6 @@ package com.project.workspace;
 import com.project.enums.ImageProcessEnum;
 import com.project.enums.RotationEnum;
 import com.project.main.Paint;
-import com.project.tools.ChangeImageSize;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -242,7 +241,7 @@ public class PaintMenu extends JMenuBar {
                             Paint.paintStart.setSizeSurface(new Dimension(width, height));
                             Paint.paintStart.setBufferedImage(image);
                             System.out.print(openFile.getPath());
-
+                            fileName=openFile.getPath();
                             save.setEnabled(true);
                         }
                     }

@@ -20,14 +20,19 @@ import javax.swing.event.ChangeListener;
  */
 public class BlackWhite extends PerformanceFilters{
     private int ton;
-    private FiltersAction filtersAction = new FiltersAction();
+    private final FiltersAction filtersAction = new FiltersAction();
   
     public BlackWhite(PaintSurface paintSurface, Filters filters) {
         super(paintSurface, filters);
         setTitle("BlackWhite");
         setLayout(new BorderLayout());
        
-        smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);
+          if(paintSurface.getImage().getWidth()>800 || paintSurface.getImage().getHeight()>600)
+        {
+            smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);  
+        }else{
+            smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.99, 0); 
+        }
            
         setSize(smallImage.getWidth()+5,smallImage.getHeight()+40);
         setLocation(200, 50);
@@ -69,7 +74,12 @@ public class BlackWhite extends PerformanceFilters{
             if(e.getSource() == changeValue)
             {
                ton  = changeValue.getValue();
-               smallImage   = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);
+                  if(paintSurface.getImage().getWidth()>800 || paintSurface.getImage().getHeight()>600)
+                    {
+                        smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.18, 0);  
+                    }else{
+                        smallImage         = imageTransformerMQ.transform(paintSurface.getImage(),0.99, 0); 
+                    }
                imaPanel.changes(smallImage,ton,ImageProcessEnum.BLACKWHITE);
             }
         }

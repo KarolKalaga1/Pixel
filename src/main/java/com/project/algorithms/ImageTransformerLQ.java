@@ -13,6 +13,7 @@ import java.awt.image.BufferedImageOp;
  */
  public class ImageTransformerLQ extends BaseImageTransformer
 {
+    @Override
     public BufferedImage transform(final BufferedImage input, final double scale, final int orientation)
     {
         checkScale(scale);

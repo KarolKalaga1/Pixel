@@ -1,7 +1,6 @@
 
 package com.project.tools;
 
-import com.project.algorithms.ImageTransformerLQ;
 import com.project.algorithms.ImageTransformerMQ;
 import com.project.workspace.PaintSurface;
 import java.awt.image.BufferedImage;
