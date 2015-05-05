@@ -163,12 +163,12 @@ public final class PaintStart extends JFrame {
     public void NewDocument(){
         
         Graphics2D graphics ;
+        paintSurface.setImage(new BufferedImage(1500, 1200, BufferedImage.TYPE_3BYTE_BGR));
         BufferedImage image = paintSurface.getImage();
         graphics =  ( Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, Width, Height);
         paintSurface.repaint();
-        //repaint();
     }
     
     public void setSizeSurface(Dimension dimension){
@@ -248,4 +248,9 @@ public final class PaintStart extends JFrame {
         changeImageSize.setVisible(true);
     }
  
+    
+    public void tmp()
+    {
+        paintSurface.zapiszMacierz();
+    }
 }

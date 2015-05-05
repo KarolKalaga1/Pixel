@@ -22,11 +22,13 @@ public class PaintMenu extends JMenuBar {
 
     JMenu file;
     //otwieranie, zapisywanie
+    JMenuItem tmp;
     JMenuItem news;
     JMenuItem open;
     JMenuItem save;
     JMenuItem saveas;
     JMenuItem quit;
+    
 
     JMenu edit;
     //cofnij, wróc
@@ -68,12 +70,14 @@ public class PaintMenu extends JMenuBar {
 
     public PaintMenu() {
 
+       
         file = new JMenu("File");
         edit = new JMenu("Edit");
         view = new JMenu("View");
         tools = new JMenu("Tools");
         help = new JMenu("Help");
 
+        tmp  = new JMenuItem("TMP");
         news = new JMenuItem("New File");
         open = new JMenuItem("Open File");
         save = new JMenuItem("Save");
@@ -81,6 +85,7 @@ public class PaintMenu extends JMenuBar {
         quit = new JMenuItem("Quit");
 
         ActionMenu actionMenu = new ActionMenu();
+        tmp.addActionListener(actionMenu);
         quit.addActionListener(actionMenu);
         save.addActionListener(actionMenu);
         saveas.addActionListener(actionMenu);
@@ -118,6 +123,7 @@ public class PaintMenu extends JMenuBar {
         
         changeSize = new JMenuItem("Change Size");
 
+        file.add(tmp);
         file.add(news);
         file.add(open);
         file.add(save);
@@ -197,6 +203,10 @@ public class PaintMenu extends JMenuBar {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            if(e.getSource() == tmp)
+            {
+                Paint.paintStart.tmp();
+            }
             if (e.getSource() == quit) {
                 System.exit(0);
             }

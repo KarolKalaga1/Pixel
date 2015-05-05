@@ -8,6 +8,7 @@ import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
 import com.project.filters.BlackWhite;
 import com.project.filters.Brightness;
+import com.project.main.Paint;
 import com.project.tools.Filters;
 import java.awt.BasicStroke; 
 import java.awt.Color;
@@ -23,11 +24,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import static java.awt.image.ImageObserver.HEIGHT;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
@@ -95,7 +100,7 @@ public final class PaintSurface extends JScrollPane{
             @Override
             public void mousePressed(MouseEvent e) {
                 
-                saveToStack(image);
+                saveToStack(getImage());
                 x=e.getX();
                 y=e.getY();
             }
@@ -190,15 +195,15 @@ public final class PaintSurface extends JScrollPane{
     }
     
     private void setImage(Image img) {
-    image = (BufferedImage) img;
-    setSize(image.getWidth(),image.getHeight());
+        setImage((BufferedImage) img);
+    setSize(getImage().getWidth(),getImage().getHeight());
     this.repaint();
     }
     
     //wybór Filtrów//
     public void imageProcesses(ImageProcessEnum processEnum){
-        saveToStack(image);
-        raster = image.getRaster();
+        saveToStack(getImage());
+        raster = getImage().getRaster();
         
         switch(processEnum)
         {
@@ -206,35 +211,35 @@ public final class PaintSurface extends JScrollPane{
              case SHARPEN: {
                 int matrix[][] = {{-1, -1, -1}, {-1, 20, -1}, {-1, -1, -1}};
                 raster = filters.convolutionalFilter(raster, matrix);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }
             break;
             case SHARPEN_MORE: {
                 int matrix[][] = {{-1, -1, -1}, {-1, 10, -1}, {-1, -1, -1}};
                 raster = filters.convolutionalFilter(raster, matrix);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }
             break;
             case BOX: {
                 int matrix[][] = {{2, 1, 2}, {1, 0, 1}, {2, 1, 2}};
                 raster = filters.convolutionalFilter(raster, matrix);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }
             break;
             case GAUSSIAN: {
                 int matrix[][] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
                 raster = filters.convolutionalFilter(raster, matrix);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }
             break;
             case LAPLACE: {
                 int matrix[][] = {{-1, -2, -1}, {-2, 6, -2}, {-1, -2, -1}};//DOPRACOWAĆ MACIERZ!!!
                 raster = filters.convolutionalFilter(raster, matrix);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }break;
             
@@ -242,27 +247,27 @@ public final class PaintSurface extends JScrollPane{
             case SEPIA :
             {
                 raster = filters.sepiaFilter(raster);
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }break;
             case GRAY : 
             {           
                 raster = filters.grayFilter(raster);     
-                image.setData(raster);
+                getImage().setData(raster);
                 this.repaint();
             }break;
             case BLACKWHITE : 
             {
                 BlackWhite blackWhite = new BlackWhite(this, filters);
                 blackWhite.setVisible(true);
-                image.setData(raster);
+                getImage().setData(raster);
             }break;
                 
             case BRIGHTNESS :
             {
                 Brightness brightness = new Brightness(this,filters);
                 brightness.setVisible(true);
-                image.setData(raster);
+                getImage().setData(raster);
             }
         }
     }
@@ -270,14 +275,14 @@ public final class PaintSurface extends JScrollPane{
     //przywrócenie poprzedniego stanu do tyłu
     public void undo() {
             if (undoStack.size() > 0) {
-                redoStack.push(copyImage(image));
+                redoStack.push(copyImage(getImage()));
                 setImage(undoStack.pop());
             }
         }
     //przywrócenie stanu sprzed cofniecia undo   
     public void redo(){
             if(redoStack.size() > 0 ){
-                saveToStack(image);
+                saveToStack(getImage());
                 setImage(redoStack.pop());
             }
         }
@@ -294,14 +299,14 @@ public final class PaintSurface extends JScrollPane{
         
         graphics2d = (Graphics2D) g2;
     
-        if(image!=null){
-         imageDrow = image;
+        if(getImage()!=null){
+         imageDrow = getImage();
            }        
            graphics2d = (Graphics2D)imageDrow.getGraphics();
            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
            //graphics2d.drawImage(image, 0, 0, this);
            g2.clearRect(0, 0, getWidth(), getHeight());
-           g2.drawImage(image, 0, 0, image.getWidth(),image.getHeight(), Color.DARK_GRAY, null);
+           g2.drawImage(getImage(), 0, 0, getImage().getWidth(),getImage().getHeight(), Color.DARK_GRAY, null);
            //g2.drawImage(image, 0, 0,image.getWidth(),image.getHeight(),null);
     }
    
@@ -310,8 +315,8 @@ public final class PaintSurface extends JScrollPane{
     }
 
     public void setImages(BufferedImage image) {
-        saveToStack(this.image);
-        this.image = image;
+        saveToStack(this.getImage());
+        this.setImage(image);
         //repaint();
     }
         
@@ -414,15 +419,15 @@ public final class PaintSurface extends JScrollPane{
  
      
         if(options==OptionsEnum.PAINT){
-            raster = image.getRaster();
-            if(x1<=image.getWidth() &&y1<=image.getHeight()){
+            raster = getImage().getRaster();
+            if(x1<=getImage().getWidth() &&y1<=getImage().getHeight()){
             raster.getPixel(x, y, pixels);
             
-            int col = image.getRGB(x1, y1);
+            int col = getImage().getRGB(x1, y1);
             
             Color color =new Color(col);
             
-             new FloodFill().floodFill(image, new Point(x1, y1),color, colorPencil);
+             new FloodFill().floodFill(getImage(), new Point(x1, y1),color, colorPencil);
             }
 
             this.repaint();
@@ -463,10 +468,39 @@ public final class PaintSurface extends JScrollPane{
             }break;
         }
         }
-       //?
-                resize(WIDTH, HEIGHT); 
+    }
 
+    /**
+     * @param image the image to set
+     */
+    public void setImage(BufferedImage image) {
+        this.image = image;
     }
     
-}
+    public void zapiszMacierz(){
+
+       WritableRaster rast = getImage().getRaster();
+       BufferedImage bufferedImage = new BufferedImage(getImage().getWidth(), getImage().getHeight(), BufferedImage.TYPE_INT_RGB);
+       
+//        for(int i=0;i<rast.getWidth();i++)
+//        {
+//            for(int j=0;j<rast.getHeight();j++)
+//            {
+//                rast.getPixel(i, j, pixels);
+//            }
+//        }
+        
+        bufferedImage.setData(rast);
+        String fileName="C:\\nowy.jpg";
+            try {
+                ImageIO.write(bufferedImage, "BMP", new File(fileName));
+            } catch (IOException ex) {
+                System.err.println(ex.getCause()+ex.getMessage());
+            }
+        }
+
+        
+    
+    }
+
 
