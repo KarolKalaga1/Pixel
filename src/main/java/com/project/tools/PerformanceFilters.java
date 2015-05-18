@@ -27,6 +27,7 @@ public class PerformanceFilters extends JFrame{
         imageTransformerMQ = new ImageTransformerMQ();
         this.paintSurface = paintSurface;
         this.filters      = filters;
+        
     }
     
 }

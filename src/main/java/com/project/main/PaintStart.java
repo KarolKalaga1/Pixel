@@ -24,10 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.skin.TwilightSkin;
 
 /**
  *
@@ -50,21 +47,21 @@ public final class PaintStart extends JFrame {
     
     public PaintStart(){
 
-         java.awt.EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-            try
-            {   
-               setUndecorated(true);
-        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-        SubstanceLookAndFeel.setSkin(new TwilightSkin());
-        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin");
-         }catch(Exception e)
-            {
-                System.out.println(e);
-            }
-            }
-        });
+//         java.awt.EventQueue.invokeLater(new Runnable(){
+//            @Override
+//            public void run() {
+//            try
+//            {   
+//               setUndecorated(true);
+//        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+//        SubstanceLookAndFeel.setSkin(new TwilightSkin());
+//        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin");
+//         }catch(Exception e)
+//            {
+//                System.out.println(e);
+//            }
+//            }
+//        });
          selectedColor = new SelectedColor();
          
         selectedColor.setNewColor(ColorEnum.BLACK, Color.BLACK);
@@ -246,6 +243,10 @@ public final class PaintStart extends JFrame {
     {
         ChangeImageSize changeImageSize = new ChangeImageSize(paintSurface,parentTransformer);
         changeImageSize.setVisible(true);
+    }
+    public void check()
+    {
+        paintSurface.check();
     }
  
     
