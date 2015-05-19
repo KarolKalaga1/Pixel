@@ -24,7 +24,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.SubstanceSkin;
+import org.pushingpixels.substance.api.skin.BusinessBlackSteelSkin;
+import org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin;
+import org.pushingpixels.substance.api.skin.BusinessSkin;
+import org.pushingpixels.substance.api.skin.DustSkin;
+import org.pushingpixels.substance.api.skin.GraphiteAquaSkin;
+import org.pushingpixels.substance.api.skin.GraphiteGlassSkin;
+import org.pushingpixels.substance.api.skin.GraphiteSkin;
+import org.pushingpixels.substance.api.skin.TwilightSkin;
 
 /**
  *
@@ -47,21 +59,23 @@ public final class PaintStart extends JFrame {
     
     public PaintStart(){
 
-//         java.awt.EventQueue.invokeLater(new Runnable(){
-//            @Override
-//            public void run() {
-//            try
-//            {   
-//               setUndecorated(true);
-//        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-//        SubstanceLookAndFeel.setSkin(new TwilightSkin());
-//        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin");
-//         }catch(Exception e)
-//            {
-//                System.out.println(e);
-//            }
-//            }
-//        });
+         java.awt.EventQueue.invokeLater(new Runnable(){
+            @Override
+            public void run() {
+            try
+            {   
+               setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
+        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
+         }catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(paintMenu, e.getMessage()+" Cause "+e.getCause());
+            }
+            }
+        });
+         //org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin
+         //JOptionPane.showMessageDialog(paintMenu, e.getMessage()+" Cause "+e.getCause());
          selectedColor = new SelectedColor();
          
         selectedColor.setNewColor(ColorEnum.BLACK, Color.BLACK);
