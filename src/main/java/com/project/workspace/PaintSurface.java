@@ -10,6 +10,7 @@ import com.project.filters.BlackWhite;
 import com.project.filters.Brightness;
 import com.project.main.Paint;
 import com.project.tools.Filters;
+import com.project.tools.Rotation3D;
 import com.sun.j3d.utils.scenegraph.io.state.javax.media.j3d.Text3DState;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.BasicStroke; 
@@ -758,7 +759,10 @@ public final class PaintSurface extends JScrollPane{
     
     public void zapiszMacierz() {
         
-        WritableRaster rast = getImage().getRaster();
+        BufferedImage bi = getImage();
+        
+        Rotation3D obracanie = new Rotation3D(bi);
+        
        // BufferedImage bufferedImage = Texture3DTest(rast);
         
                //Frame frame = new JFrame(, 256, 256);
