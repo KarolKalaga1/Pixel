@@ -6,6 +6,10 @@ import com.project.workspace.PaintSurface;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.GraphiteAquaSkin;
+import org.pushingpixels.substance.api.skin.TwilightSkin;
 
 /**
  *
@@ -16,7 +20,10 @@ public class ChangeImageSize extends javax.swing.JFrame {
     private final PaintSurface paintSurface;
     private final ImageTransformer imageTransformer;
     public ChangeImageSize(PaintSurface paintSurface, ImageTransformer parentTransformer) {
-        
+        setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
+        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
         this.paintSurface     = paintSurface;
         this.imageTransformer = parentTransformer;
         setTitle("Change Image Size");

@@ -4,6 +4,9 @@ package com.project.tools;
 import com.project.workspace.PaintSurface;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.GraphiteAquaSkin;
 
 /**
  *
@@ -14,7 +17,10 @@ public class ResizeTools extends JFrame {
     BufferedImage image = null;
     private final PaintSurface paintSurface;
     public ResizeTools(PaintSurface paintSurface) {
-        
+         setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
+        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
        this.paintSurface = paintSurface;
         initComponents();
           
