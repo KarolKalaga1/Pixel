@@ -762,6 +762,7 @@ public final class PaintSurface extends JScrollPane{
         BufferedImage bi = getImage();
         
         Rotation3D obracanie = new Rotation3D(bi);
+        obracanie.setVisible(true);
         
        // BufferedImage bufferedImage = Texture3DTest(rast);
         

@@ -28,15 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.SubstanceSkin;
-import org.pushingpixels.substance.api.skin.BusinessBlackSteelSkin;
-import org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin;
-import org.pushingpixels.substance.api.skin.BusinessSkin;
-import org.pushingpixels.substance.api.skin.DustSkin;
 import org.pushingpixels.substance.api.skin.GraphiteAquaSkin;
-import org.pushingpixels.substance.api.skin.GraphiteGlassSkin;
-import org.pushingpixels.substance.api.skin.GraphiteSkin;
-import org.pushingpixels.substance.api.skin.TwilightSkin;
 
 /**
  *

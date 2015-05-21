@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.project.tools;
 
-import com.project.enums.ImageProcessEnum;
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -17,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.media.j3d.Alpha;
 import javax.media.j3d.Appearance;
-import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.RotationInterpolator;
@@ -32,8 +27,6 @@ import javax.swing.JRootPane;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.GraphiteAquaSkin;
 
@@ -48,9 +41,11 @@ public class Rotation3D extends JFrame {
     JSlider sliderX;
     JSlider sliderY;
     RotationAction rotationAction = new RotationAction();
+    //private Rotation3DPanel rotation3DPanel;
     JPanel imagePanel;
-        
+        Canvas im;
     public Rotation3D(BufferedImage bi) throws HeadlessException {
+       // rotation3DPanel = new Rotation3DPanel();
         this.bi = bi;
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
@@ -60,20 +55,20 @@ public class Rotation3D extends JFrame {
         setTitle("Rotation 3D");
         setLayout(new BorderLayout());
         setSize(500, 500);
-        
+       
         setResizable(false);
-        setVisible(true);
         init();
     }
     
     public void init(){
         imagePanel = new JPanel();
         imagePanel.setVisible(true);
+        
         imagePanel.setSize(100, 100);
         
         buttonSave   = new JButton("Save");
-        sliderX = new JSlider(-100, 100, 0);
-        sliderY = new JSlider(JSlider.VERTICAL, -100, 100, 0);
+        sliderX = new JSlider(-10, 10, 0);
+        sliderY = new JSlider(JSlider.VERTICAL, -10, 10, 0);
         
         buttonSave.addActionListener(rotationAction);
         sliderX.addChangeListener(rotationAction);
@@ -84,7 +79,7 @@ public class Rotation3D extends JFrame {
         add(sliderY,BorderLayout.EAST);
         add(buttonSave,BorderLayout.SOUTH);
         
-        paint(0.0, 0.0);
+        paint(0.0, 1.0);
     }     
     
     public class RotationAction implements ActionListener,ChangeListener
@@ -94,7 +89,7 @@ public class Rotation3D extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == buttonSave)
             {
-                //Zapis do pliku
+                 setVisible(true);
             }
         }
 
@@ -102,12 +97,12 @@ public class Rotation3D extends JFrame {
         public void stateChanged(ChangeEvent e) {
             if(e.getSource() == sliderX)
             {
-               paint(0.6, 0.0);
+               paint(sliderX.getValue(),sliderY.getValue());
             }
             
             if(e.getSource() == sliderY)
             {
-               paint(0.0, 0.6);
+               paint(sliderX.getValue(), sliderX.getValue());
             }
         }
     }
@@ -115,7 +110,8 @@ public class Rotation3D extends JFrame {
     public void paint(double angleX, double angleY){
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
         Canvas3D canvas = new Canvas3D(config);
-        imagePanel.add("Center", canvas);
+        //imagePanel.
+                add("Center", canvas);
 
         TransformGroup tg_content = getScene(bi);
         
@@ -135,8 +131,7 @@ public class Rotation3D extends JFrame {
         
         universe.getViewingPlatform().setNominalViewingTransform();
         universe.addBranchGraph(content);
-        
-        setVisible(true);
+     
     }
 
     public TransformGroup getScene(BufferedImage bi) {
@@ -160,9 +155,12 @@ public class Rotation3D extends JFrame {
 
         RotationInterpolator rotator = new RotationInterpolator(rotationAlpha,
                 group, yAxis, 0.0f, (float) Math.PI * 2.0f);
-        BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
-                100.0);
-        rotator.setSchedulingBounds(bounds);
+        
+//        //zakomentowanie tych 3 linijek usuwa błąd ale nie wiem czy to poprawnie wpływa na obracanie
+//        BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
+//                100.0);
+//        rotator.setSchedulingBounds(bounds);
+//        //
         group.addChild(rotator);
 
         return group;
