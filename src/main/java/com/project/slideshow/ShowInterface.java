@@ -12,9 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
-
-
-
            
 public class ShowInterface extends JFrame implements ActionListener{
            
@@ -23,12 +20,19 @@ public class ShowInterface extends JFrame implements ActionListener{
            private ImageShow show;
            private boolean stop=true;
            private ImageSlider slider;
+           private ImageIcon play;
+           private ImageIcon stops;
            private JMenuBar mainmenu;
                 private JMenu menu;
-                     private JMenuItem mopen;
-                     private JMenuItem mexit;
+                    private JMenuItem mopen;
+                    private JMenuItem mexit;
                 private JMenu options;
-                     private JMenuItem flipTime;
+                    private JMenu flipTime;
+                        private JMenuItem speed1;
+                        private JMenuItem speed2;
+                        private JMenuItem speed3;
+                        private JMenuItem speed4;
+                        
             public ShowInterface(){
 
                try {
@@ -37,21 +41,43 @@ public class ShowInterface extends JFrame implements ActionListener{
                    
                    setSize(350, 350);
                    mainmenu=new JMenuBar();
-                   JMenu menu=new JMenu("File");
+                   menu=new JMenu("File");
                    mopen=new JMenuItem("Open...");
                    mopen.setMnemonic(KeyEvent.VK_O);
                    mopen.addActionListener(this);
                    mexit=new JMenuItem("Exit");
                    mexit.setMnemonic(KeyEvent.VK_X);
                    mexit.addActionListener(this);
+                   
+                   options = new JMenu("Options");
+                        flipTime = new JMenu("Flip Time");
+                            speed1 = new JCheckBoxMenuItem("5 seconds");
+                            speed2 = new JCheckBoxMenuItem("8 seconds");
+                            speed3 = new JCheckBoxMenuItem("10 seconds");
+                            speed4 = new JCheckBoxMenuItem("15 seconds");
+                            
+                   speed1.setSelected(true);
+
+                   flipTime.add(speed1);
+                   flipTime.add(speed2);
+                   flipTime.add(speed3);
+                   flipTime.add(speed4);
+                   speed1.addActionListener(this);
+                   speed2.addActionListener(this);
+                   speed3.addActionListener(this);
+                   speed4.addActionListener(this);
+                   options.add(flipTime);
+                   
                    menu.add(mopen);
                    menu.add(mexit);
                    mainmenu.add(menu);
+                   mainmenu.add(options);
                    setJMenuBar(mainmenu);
                    setLocationRelativeTo(null);
                    
-                   //btSlideShow=new JButton(new ImageIcon("play.png"));
-                   btSlideShow = new JButton("Play");
+                   play  = new ImageIcon(this.getClass().getResource("/play.png"));
+                   stops = new ImageIcon(this.getClass().getResource("/stop.png"));
+                   btSlideShow = new JButton(play);
                    btSlideShow.setBackground(Color.BLACK);
                    btSlideShow.addActionListener(this);
                    btSlideShow.setEnabled(false);
@@ -78,6 +104,34 @@ public class ShowInterface extends JFrame implements ActionListener{
            
            
         public void actionPerformed(ActionEvent e){
+            if(e.getSource() == speed1)
+            {
+                speed2.setSelected(false);
+                speed3.setSelected(false);
+                speed4.setSelected(false);
+                slider.changeTime(5000);
+            }
+            else if(e.getSource() == speed2)
+            {
+                speed1.setSelected(false);
+                speed3.setSelected(false);
+                speed4.setSelected(false); 
+                slider.changeTime(8000);
+            }
+             else if(e.getSource() == speed3)
+            {
+                speed1.setSelected(false);
+                speed2.setSelected(false);
+                speed4.setSelected(false);   
+                slider.changeTime(10000);
+            }
+              else if(e.getSource() == speed4)
+            {
+                speed1.setSelected(false);
+                speed2.setSelected(false);
+                speed3.setSelected(false);
+                slider.changeTime(15000);
+            }
                     if(e.getSource()==btSlideShow){
                         if(stop){
                            
@@ -106,13 +160,13 @@ public class ShowInterface extends JFrame implements ActionListener{
                       }
            
         public void startClick(){
-                        btSlideShow.setIcon(new ImageIcon("pause.png"));
+                        btSlideShow.setIcon(stops);
                         stop=false;
                         slider=new ImageSlider();
                         slider.start();
             }          
         public void stopClick(){
-                        btSlideShow.setIcon(new ImageIcon("play.png"));
+                        btSlideShow.setIcon(play);
                         stop=true;                 
                         slider.stopShow();
             }
@@ -120,11 +174,16 @@ public class ShowInterface extends JFrame implements ActionListener{
         class ImageSlider extends Thread{
                     private boolean started;
                     private HashMap<Integer,String> map;
+                    private int second;
                     
                     private ImageSlider(){
                             started=true;
                             map=show.getImgFiles();
+                            second=5000;
                         }
+                    public void changeTime(int time){
+                    this.second = time;
+                    }
 
                 public void run(){
                             int i;
@@ -132,10 +191,11 @@ public class ShowInterface extends JFrame implements ActionListener{
                                 for(i=0;i<map.size();i++)
                                 {
                                 if(started!=false){
-                                            Thread.sleep(5000);                                                           
+                                            Thread.sleep(second);                                                           
                                              show.moveNext();
-
-                                            }          
+                                            }    
+                          
+                                    
                                 }
                             stopClick();
                             show.moveFirst();
