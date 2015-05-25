@@ -19,8 +19,8 @@ public class ResizeTools extends JFrame {
     public ResizeTools(PaintSurface paintSurface) {
          setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
-        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
+//        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
+//        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
        this.paintSurface = paintSurface;
         initComponents();
           

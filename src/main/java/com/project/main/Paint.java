@@ -10,7 +10,11 @@ public class Paint {
     public static PaintStart paintStart;
     
     public static void main(String[] args){
-        
-        paintStart = new PaintStart();
+            
+        try {
+            Thread.sleep(2000);
+            paintStart = new PaintStart();
+        } catch (InterruptedException ex) {
+        }
     }
 }

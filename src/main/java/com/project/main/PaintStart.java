@@ -42,6 +42,7 @@ public final class PaintStart extends JFrame {
     private  final PaintFigures   paintFigures;
     private  final PaintSelectColor paintSelectColor;
     private  ImageTransformer parentTransformer = new ImageTransformerLQ();
+   
     
     private SelectedColor selectedColor;
     private ResizeTools  resizeTools;
@@ -49,25 +50,24 @@ public final class PaintStart extends JFrame {
     private  int   Width;
     private  int   Height;
     
-    public PaintStart(){
-
-         java.awt.EventQueue.invokeLater(new Runnable(){
+    public PaintStart(){ 
+      java.awt.EventQueue.invokeLater(new Runnable(){
             @Override
             public void run() {
             try
             {   
-               setUndecorated(true);
+               
+         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
         SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
-        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
+        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");//"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
          }catch(Exception e)
             {
                 JOptionPane.showMessageDialog(paintMenu, e.getMessage()+" Cause "+e.getCause());
             }
             }
         });
-         //org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin
-         //JOptionPane.showMessageDialog(paintMenu, e.getMessage()+" Cause "+e.getCause());
+         setLocationRelativeTo(null);
          selectedColor = new SelectedColor();
          
         selectedColor.setNewColor(ColorEnum.BLACK, Color.BLACK);
@@ -117,6 +117,7 @@ public final class PaintStart extends JFrame {
         initializeSurface();
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setVisible(true);
     }
 
@@ -128,7 +129,6 @@ public final class PaintStart extends JFrame {
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, Width, Height);
         paintSurface.repaint();
-    //repaint();
     }
     
     public String getSaveFileName(){
@@ -197,6 +197,7 @@ public final class PaintStart extends JFrame {
      public void RedoOperation(){
         paintSurface.redo();
     }
+     
     public void rotationImage(RotationEnum rotation){
         
         switch(rotation)
@@ -255,6 +256,10 @@ public final class PaintStart extends JFrame {
         paintSurface.check();
     }
  
+    public void slideshow()
+    {
+        paintSurface.slideshow();
+    }
     
     public void tmp()
     {

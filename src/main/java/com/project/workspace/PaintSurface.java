@@ -8,16 +8,16 @@ import com.project.algorithms.SizedStack;
 import com.project.algorithms.FloodFill;
 import com.project.filters.BlackWhite;
 import com.project.filters.Brightness;
-import com.project.main.Paint;
+import com.project.slideshow.ShowInterface;
+
+
 import com.project.tools.Filters;
 import com.project.tools.Rotation3D;
-import com.sun.j3d.utils.scenegraph.io.state.javax.media.j3d.Text3DState;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.BasicStroke; 
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -34,25 +34,20 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.*;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector4f;
-import sun.awt.image.WritableRasterNative;
 
 
 
@@ -781,6 +776,12 @@ public final class PaintSurface extends JScrollPane{
         
         this.repaint();
     }
+    
+        public  void slideshow()
+        {   
+            ShowInterface slide = new ShowInterface();   
+            slide.setVisible(true);
+        }
     
     }
 

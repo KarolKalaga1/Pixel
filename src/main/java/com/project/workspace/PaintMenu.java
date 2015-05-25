@@ -1,3 +1,4 @@
+
 package com.project.workspace;
 
 import com.project.enums.ImageProcessEnum;
@@ -36,14 +37,15 @@ public class PaintMenu extends JMenuBar {
     JMenuItem redo;
 
     JMenu view;
+        JMenuItem slideshow;
     //powiększenie, oddalenie, pełny ekran
     JMenu rotation;
-    JMenuItem rotate90;
-    JMenuItem rotate180;
-    JMenuItem flipHorizontalyRotate90;
-    JMenuItem flipVerticallyRotate90;
-    JMenuItem horizontalRotation;
-    JMenuItem verticalRotation;
+        JMenuItem rotate90;
+        JMenuItem rotate180;
+        JMenuItem flipHorizontalyRotate90;
+        JMenuItem flipVerticallyRotate90;
+        JMenuItem horizontalRotation;
+        JMenuItem verticalRotation;
 
 
     JMenu filters;
@@ -99,6 +101,7 @@ public class PaintMenu extends JMenuBar {
 
         rotation = new JMenu("Rotation");
 
+        slideshow = new JMenuItem("Slideshow");
         horizontalRotation = new JMenuItem("Flip Horizontal");
         verticalRotation = new JMenuItem("Flip Vertical");
         rotate90 = new JMenuItem("Rotate 90°");
@@ -154,10 +157,12 @@ public class PaintMenu extends JMenuBar {
         tools.add(changeSize);
         changeSize.addActionListener(actionMenu);
         
+        view.add(slideshow);
         view.add(rotation);
 
         undo.addActionListener(actionMenu);
         redo.addActionListener(actionMenu);
+        slideshow.addActionListener(actionMenu);
         rotate90.addActionListener(actionMenu);
         rotate180.addActionListener(actionMenu);
         flipHorizontalyRotate90.addActionListener(actionMenu);
@@ -258,6 +263,10 @@ public class PaintMenu extends JMenuBar {
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Open file Exception " + ex.getMessage(), "Open exception", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
+            if(e.getSource() == slideshow)
+            {
+                Paint.paintStart.slideshow();
             }
             if(e.getSource() ==horizontalRotation)
             {
