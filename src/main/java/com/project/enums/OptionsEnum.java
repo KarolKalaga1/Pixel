@@ -7,6 +7,7 @@ package com.project.enums;
  */
 public enum OptionsEnum {PEN  , BRUSH ,
                      ERASER , PAINT,
-                     COLORCHOOSE , NONE};
+                     COLORCHOOSE ,MAGNIFICATION,
+                     NONE};
     
 

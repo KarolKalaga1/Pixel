@@ -45,8 +45,8 @@ public class PaintTool extends JPanel{
         buttons[1] =   new JButton(marker);
         buttons[2] =   new JButton(paint);
         buttons[3] =   new JButton(eraser);
-        buttons[4] =   new JButton(text);
-        buttons[5] =   new JButton(loupe);    
+        buttons[4] =   new JButton(loupe); 
+        buttons[5] =   new JButton(text);
         buttons[6] =   new JButton(paintColor);
         
         PaintButtons paintButtons=new PaintButtons();
@@ -54,8 +54,7 @@ public class PaintTool extends JPanel{
         for(int i = 0 ; i<7 ; i++){
         buttons[i].addActionListener(paintButtons);
         }
-        
-        buttons[4].setEnabled(false);
+ 
         buttons[5].setEnabled(false);
       
         for(int i=0 ; i<buttons.length ;++i){
@@ -81,6 +80,9 @@ public class PaintTool extends JPanel{
             }
             if(e.getSource()==buttons[3]){
                 Paint.paintStart.SetOptions(OptionsEnum.ERASER);
+            }
+            if(e.getSource()==buttons[4]){
+                Paint.paintStart.SetOptions(OptionsEnum.MAGNIFICATION);
             }
             if(e.getSource()==buttons[6]){
                 Paint.paintStart.sizeTools();

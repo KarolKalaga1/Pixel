@@ -47,21 +47,20 @@ public class Rotation3D extends JFrame {
     public Rotation3D(BufferedImage bi) throws HeadlessException {
        // rotation3DPanel = new Rotation3DPanel();
         this.bi = bi;
-        setUndecorated(true);
-        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
-        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
         
+//        setUndecorated(true);
+//        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+//        SubstanceLookAndFeel.setSkin(new GraphiteAquaSkin());//new GraphiteAquaSkin()//new GraphiteGlassSkin()//new GraphiteSkin() //new TwilightSkin()
+//        SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel");
+//        
         setTitle("Rotation 3D");
         setLayout(new BorderLayout());
         setSize(500, 500);
        
         setResizable(false);
-        init();
-    }
-    
-    public void init(){
-        imagePanel = new JPanel();
+        
+        
+           imagePanel = new JPanel();
         imagePanel.setVisible(true);
         
         imagePanel.setSize(100, 100);
@@ -79,8 +78,31 @@ public class Rotation3D extends JFrame {
         add(sliderY,BorderLayout.EAST);
         add(buttonSave,BorderLayout.SOUTH);
         
-        paint(0.0, 1.0);
-    }     
+        paint(0.4, 0.75);
+       // init();
+    }
+    
+//    public void init(){
+//        imagePanel = new JPanel();
+//        imagePanel.setVisible(true);
+//        
+//        imagePanel.setSize(100, 100);
+//        
+//        buttonSave   = new JButton("Save");
+//        sliderX = new JSlider(-10, 10, 0);
+//        sliderY = new JSlider(JSlider.VERTICAL, -10, 10, 0);
+//        
+//        buttonSave.addActionListener(rotationAction);
+//        sliderX.addChangeListener(rotationAction);
+//        sliderY.addChangeListener(rotationAction);
+//        
+//        add(imagePanel,BorderLayout.CENTER);
+//        add(sliderX,BorderLayout.NORTH);
+//        add(sliderY,BorderLayout.EAST);
+//        add(buttonSave,BorderLayout.SOUTH);
+//        
+//        paint(0.0, 1.0);
+//    }     
     
     public class RotationAction implements ActionListener,ChangeListener
     {
@@ -107,7 +129,7 @@ public class Rotation3D extends JFrame {
         }
     }
      
-    public void paint(double angleX, double angleY){
+    public  void paint(double angleX, double angleY){
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
         Canvas3D canvas = new Canvas3D(config);
         //imagePanel.
@@ -116,11 +138,15 @@ public class Rotation3D extends JFrame {
         TransformGroup tg_content = getScene(bi);
         
         Transform3D rotation = new Transform3D();
+         Transform3D rotationX = new Transform3D();
+          Transform3D rotationY = new Transform3D();
         
-        rotation.rotY(angleY);
-        rotation.rotX(angleX);
+        rotationX.rotY(angleY);
+        rotationY.rotX(angleX);
         
-        tg_content.setTransform(rotation);
+//        tg_content.setTransform(rotation);
+        tg_content.setTransform(rotationX);
+        tg_content.setTransform(rotationY);
         
         BranchGroup content = new BranchGroup();
 
