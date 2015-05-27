@@ -138,15 +138,17 @@ public class Rotation3D extends JFrame {
         TransformGroup tg_content = getScene(bi);
         
         Transform3D rotation = new Transform3D();
-         Transform3D rotationX = new Transform3D();
-          Transform3D rotationY = new Transform3D();
+        Transform3D rotationX = new Transform3D();
+        Transform3D rotationY = new Transform3D();
         
-        rotationX.rotY(angleY);
+        Transform3D globalRotation = new Transform3D();
+        
         rotationY.rotX(angleX);
+        rotationX.rotY(angleY);
         
-//        tg_content.setTransform(rotation);
-        tg_content.setTransform(rotationX);
-        tg_content.setTransform(rotationY);
+        globalRotation.mul(rotationX, rotationY);
+        
+        tg_content.setTransform(globalRotation);
         
         BranchGroup content = new BranchGroup();
 
